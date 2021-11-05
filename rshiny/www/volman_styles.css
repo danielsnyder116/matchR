@@ -3,3 +3,32 @@
  * ---------------------
 */
 
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+  margin: 10px 0px;
+}
+
+
+/*Color of dashboard header/banner*/
+.skin-blue .main-header .navbar, .skin-blue .main-header .logo {
+  background-color: #74bee9; /* */
+}
+
+.skin-blue .main-header .logo {
+  background-color: #74bee9; /* */
+  border-right: 1px solid white;
+}
+
+/*Color of sidebar highlight border on left*/
+.skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li:hover>a {
+  border-left: 3px solid #74bee9;
+}
+
+
+
+/* Sidebar */
+.sidebar {
+  padding:20px 0px 20px 0px;
+}
+
+
+
