@@ -3,9 +3,11 @@
  * ---------------------
 */
 
-.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+
+h1, h2, h3, h4, h5, h6 {
   margin: 10px 0px;
 }
+
 
 
 /*Color of dashboard header/banner*/
@@ -13,10 +15,19 @@
   background-color: #74bee9; /* */
 }
 
+/*Left section of header */
 .skin-blue .main-header .logo {
   background-color: #74bee9; /* */
   border-right: 1px solid white;
 }
+
+/*Disable highlight color of left section of header*/
+.skin-blue .main-header .logo:hover,
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+  background-color: #74bee9;
+}
+
+
 
 /*Color of sidebar highlight border on left*/
 .skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li:hover>a {

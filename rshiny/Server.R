@@ -69,14 +69,13 @@ server <- function(id, input, output) {
   
   
   
-  output$all_vol_table <- dataTableOutput(outputId = "all_vol_table",
-  
-  DT::renderDT({ all_vol_table()[, c("category", "day", "name", "email", "phone", "new_volunteer",
-                                  "semester", "year", "tutor_type", "class", "time", "club_name",  
-                                  "nickname")]
-    
-    })  # %>% formatStyle()
-  )
+  # output$all_vol_table <- dataTableOutput(outputId = "all_vol_table",
+  # 
+  # DT::renderDT({ all_vol()[, c("category", "day", "name", "email", "phone", "new_volunteer","semester", 
+  #                              "year", "tutor_type", "class", "time", "club_name", "nickname")]
+  #   
+  #   })  # %>% formatStyle()
+  # )
   
   
   
