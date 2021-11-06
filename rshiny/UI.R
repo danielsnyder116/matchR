@@ -3,7 +3,12 @@
 #---------------------
 
 
+header <- dashboardHeader(title = "Volman",
 
+  dropdownMenuCustom(type = "messages", icon = icon('user'), badgeStatus = NULL),
+  dropdownMenuCustom(type = "notifications", icon = icon('cog'), badgeStatus = NULL)
+
+)
 
 
 
@@ -39,9 +44,9 @@ body <- dashboardBody(
           value='vol_overview_tab',
           br(),
           
-          valueBoxOutput(outputId = "total_vol_box"),
-          p("Data table of ALL VOLUNTEERS"),
-          DTOutput(outputId = "all_vol_table")
+          valueBoxOutput(outputId = "total_vol_box") #,
+         
+          #DTOutput(outputId = "all_vol_table")
         ),
           
         #IN-PERSON TEACHERS
@@ -273,9 +278,35 @@ body <- dashboardBody(
                   # 
                   # )
 
+    ), #tabItem
+    
+    #SETTINGS
+    #----------
+    tabItem(
+      tabName = 'sidebar_settings',
+      h3("Profile"),
+      br(),
+      
+      #FIRST LEVEL OF TABS
+      tabsetPanel(id = 'setpanel_asfd',
+                  
+                  #PROFILE          
+                  tabPanel(
+                    title = 'Overview',
+                    value='vol_ofsad',
+                    br()
+                  ),
+                  
+                
+                  #OTHER
+                  tabPanel(
+                    title = 'Other',
+                    value='other_tabs',
+                    br(),
+                    p("Data Table of Volunteers")
+                  )
+      ) #tabsetPanel 1st
     ) #tabItem
-
-
 
   ) #tabItems
   
@@ -283,6 +314,6 @@ body <- dashboardBody(
 
 
 
-ui <- dashboardPage(header = dashboardHeader(title = NULL),
+ui <- dashboardPage(header = header,
                     sidebar = sidebar,
                     body = body)

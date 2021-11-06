@@ -9,6 +9,7 @@
 
 server <- function(id, input, output) {
 
+  #SIDEBAR
   
   #Dynamic Sidebar to hide certain sections from staff
   output$sidebar_menu <- renderMenu({
@@ -49,7 +50,9 @@ server <- function(id, input, output) {
                menuSubItem('Volunteers', tabName = "sidebar_vol_reports_tab")
       ),
 
-      menuItem('EXPORT DATA', tabName = 'sidebar_export')
+      menuItem('EXPORT DATA', tabName = 'sidebar_export'),
+      
+      menuItem('Settings', tabName = 'sidebar_settings')
 
     ) #sidebarMenu
     
@@ -65,21 +68,28 @@ server <- function(id, input, output) {
   
   #Inputs & Calculated Reactives
   
-  all_vol <- reactive({ all_vol <- load_data('vols_historical') })
-  
-  
-  
-  # output$all_vol_table <- dataTableOutput(outputId = "all_vol_table",
+  # all_vol <- reactive({ all_vol <- load_data('vols_historical') })
   # 
-  # DT::renderDT({ all_vol()[, c("category", "day", "name", "email", "phone", "new_volunteer","semester", 
-  #                              "year", "tutor_type", "class", "time", "club_name", "nickname")]
+  # 
+  # 
+  # output$all_vol_table <- renderDT({ 
   #   
-  #   })  # %>% formatStyle()
-  # )
-  
-  
-  
-  
+  #   datatable(all_vol()[, c("category", "day", "name", "email", "phone", "new_volunteer","semester",
+  #                              "year", "tutor_type", "class", "time", "club_name", "nickname")],
+  #             
+  #             rownames = FALSE,
+  #             #colnames = c(),
+  #             
+  #             options = list()
+  #                              
+  #   )
+  # 
+  # })  # %>% formatStyle()
+  # 
+  # 
+  # 
+  # 
+  # 
   kpi_total_vol <- reactive({  kpi_total_vol <- "100" })
   
   
