@@ -8,3 +8,7 @@ DB_NAME <- strsplit(DB_PATH, split = "active/")[[1]][2]
 USER <- reactiveVal(NULL)
 
 
+users <- tibble(user = c("dsnyder", "cgriffiths", "yabrego"),
+                password = c("123", "123", "123"),
+                name = c("Danny Snyder", "Chris Griffiths", "Yaritza Abrego")
+                )

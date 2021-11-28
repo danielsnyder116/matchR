@@ -22,7 +22,7 @@ load_package <- function(package) {
 
 packages <- c("shiny", "shinyjs", "shinydashboard", "shinyFeedback",
               "shinycssloaders", "DT", "dplyr", "readr", "lubridate",
-              "RSQLite", "dtplyr", "glue", "rsconnect")
+              "RSQLite", "dtplyr", "glue", "rsconnect", "shinyauthr")
 
 sapply(packages, load_package)
 
@@ -47,8 +47,8 @@ setwd("/Users/Daniel/Desktop/WEC/Shiny/matchR/rshiny")
 source("R/global.R")
 source("R/core_functions.R")
 source("R/custom_ui_styling.R")
-source("UI.R")
 source("Server.R")
+source("UI.R")
 
 app <- shinyApp(ui=ui, server=server)
 

@@ -3,12 +3,30 @@
 #---------------------
 
 
-#Any Reactive Values Needed
+
 
 
 
 server <- function(id, input, output) {
+  
+  
+  #Any Reactive Values Needed
+  USER <- reactiveVal()
+  
+  #Initial Popup for LOGIN
+  showModal(
+    modalDialog(title = "Login!", footer = NULL,
 
+      textInput(inputId = "user_name", label = "User Name"),
+      textInput(inputId = "user_password", label = "Password"),
+      
+      actionButton(inputId = "login_button", label = "Login"),
+      actionButton(inputId = "cancel_login_button", label = "Cancel")
+    )
+  )
+
+
+  
   #SIDEBAR
   
   #Dynamic Sidebar to hide certain sections from staff
@@ -16,7 +34,7 @@ server <- function(id, input, output) {
   #tabName below is registered.
   output$sidebar_menu <- renderMenu({
     sidebarMenu(id = 'sidebar_tabs',
-         
+
       menuItem("Home", icon = icon("home"), tabName = "sidebar_home"),
      
       menuItem('MATCHING', tabName = 'sidebar_matching'),
@@ -73,6 +91,10 @@ server <- function(id, input, output) {
   #Compared to last semester
   #Compared to last year
     
+  
+  #================
+  # IMPORT ALL OEs HERE
+  source("./observe_events.R")
   
 
 }

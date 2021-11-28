@@ -9,9 +9,12 @@ header <- dashboardHeader(
             #title = "Mt. WEC",
             #icon('mountain'),
           
-            title = div(tags$img(src = "wec_title_wide.png"), style = 'background-color: white;
-                       padding: 0px 0px 10px 0px; margin: 0px;'), 
-                    
+            title = "WEC",
+            
+            # div(tags$img(src = "wec_title_wide.png"), style = 'background-color: white;
+            #            padding: 0px 0px 10px 0px; margin: 0px;'), 
+            
+            titleWidth = 170,
            
             #CUSTOM HEADER TITLE
             #There is no non-hacky way of doing this - have to tweak dropdown menu html
@@ -24,9 +27,9 @@ header <- dashboardHeader(
 
 
 
-sidebar <- dashboardSidebar(
+sidebar <- dashboardSidebar(width = "170px",
   
-  #Dynmic sidebar menu coming from Server.R
+  #Dynamic sidebar menu coming from Server.R
   sidebarMenuOutput("sidebar_menu")
   
 )
@@ -47,6 +50,8 @@ body <- dashboardBody(
   
   #----------------
   #----------------
+  
+  shinyjs::hidden(
   
   tabItems(
     
@@ -142,6 +147,8 @@ body <- dashboardBody(
   #----------------
 
   ) #tabItems
+  
+  ) #shinyjs::hidden
 ) #dashboardBody
 
 
