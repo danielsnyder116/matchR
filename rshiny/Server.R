@@ -17,43 +17,15 @@ server <- function(id, input, output) {
   output$sidebar_menu <- renderMenu({
     sidebarMenu(id = 'sidebar_tabs',
          
-      menuItem("Home", icon = icon("home"), tabName = "sidebar_home"),    
-                
-      menuItem('VOLUNTEERS', tabName = 'sidebar_volunteers',
-               menuSubItem('Current Semester', tabName = 'sidebar_vol_current_sem'),
-               menuSubItem('Historical', tabName = 'sidebar_vol_historical'),
-               menuSubItem('Intake', tabName = 'sidebar_vol_intake'),
-               menuSubItem('Surveys', tabName = 'sidebar_vol_surveys')
-      ),
-      
-      menuItem('STUDENTS', tabName = 'sidebar_students',
-               menuSubItem('Current Semester', tabName = 'sidebar_stud_current_sem'),
-               menuSubItem('Historical', tabName = 'sidebar_stud_historical'),
-               menuSubItem('Intake', tabName = 'sidebar_stud_intake'),
-               menuSubItem('Surveys', tabName = 'sidebar_stud_survey')
-      ),
-      
-
-      menuItem('MATCHING', tabName = 'sidebar_matching' ,
-               menuSubItem('Students', tabName = 'sidebar_match_process', newtab = TRUE)
-             
-              
-      ),
-    
-      #menuItem('ATTENDANCE', tabName = 'sidebar_attendance'),
-      
-      menuItem('ANALYSIS', tabName = 'sidebar_analysis', icon=icon('chart-bar')
-      ),
-      
-      menuItem('REPORTS', tabName = 'sidebar_reports', icon = icon('file-alt'),
-               menuSubItem('Students', tabName = "sidebar_stud_reports"),
-               menuSubItem('Volunteers', tabName = "sidebar_vol_reports")
-      ),
-
-      menuItem('EXPORT DATA', tabName = 'sidebar_export'),
-      
+      menuItem("Home", icon = icon("home"), tabName = "sidebar_home"),
+     
+      menuItem('MATCHING', tabName = 'sidebar_matching'),
+      # menuItem('ANALYSIS', tabName = 'sidebar_analysis', icon=icon('chart-bar')),
+      # 
+      # menuItem('REPORTS', tabName = 'sidebar_reports', icon = icon('file-alt')),
+      # menuItem('EXPORT DATA', tabName = 'sidebar_export'),
       menuItem('Settings', tabName = 'sidebar_settings')
-
+      
     ) #sidebarMenu
     
   })

@@ -3,10 +3,22 @@
 #---------------------
 
 
-header <- dashboardHeader(title = "Volman",
+header <- dashboardHeader(
+  
+            #Sidebar title
+            #title = "Mt. WEC",
+            #icon('mountain'),
+          
+            title = div(tags$img(src = "wec_title_wide.png"), style = 'background-color: white;
+                       padding: 0px 0px 10px 0px; margin: 0px;'), 
+                    
+           
+            #CUSTOM HEADER TITLE
+            #There is no non-hacky way of doing this - have to tweak dropdown menu html
+            tags$li(class = "dropdown", div(id='center-title', icon('people-arrows'), 'MatchR')),
 
-  dropdownMenuCustom(type = "messages", icon = icon('user'), badgeStatus = NULL),
-  dropdownMenuCustom(type = "notifications", icon = icon('cog'), badgeStatus = NULL)
+            dropdownMenuCustom(type = "messages", icon = icon('user'), badgeStatus = NULL),
+            dropdownMenuCustom(type = "notifications", icon = icon('cog'), badgeStatus = NULL)
 
 )
 
@@ -28,263 +40,50 @@ body <- dashboardBody(
   useShinyFeedback(),
   
   #Adding CSS styling
-  tags$head(tags$link(rel = "stylesheet", type = 'text/css', href = 'volman_styles.css')),
+  tags$head(tags$link(rel = "stylesheet", type = 'text/css', href = 'matchR_styles.css')),
+  
+  #Adding favicon / icon at top of webpage
+  tags$head(tags$link(rel = "shortcut-icon", href = 'favicon.ico')),
   
   #----------------
   #----------------
   
   tabItems(
     
-    #VOLUNTEERS
-    #----------
+    #HOME
+    tabItem(
+      tabName = 'sidebar_home',
+      h4("Welcome to WEC's MatchR"),
+      br(),
+      
+      tabsetPanel(id = 'setpanel_home',
+      
+        tabPanel(
+          title = 'Overview',
+          value = 'home_overview_tab',
+          br()
+        ),
+        
+        tabPanel(
+          title = 'User Guide',
+          value = 'home_user_guide_tab'
+        ),
+        
+        tabPanel(
+          title = 'Troubleshooting',
+          value = 'home_troubleshooting_tab'
+        ),
+        
+        tabPanel(
+          title = 'Report a Bug',
+          value = 'home_bug_tab'
+        )
+      ) #tabsetPanel
+    ),
+    
+   
 
-    #No content for just clicking on sidebar_volunteers
-    
-    #CURRENT SEMESTER
-    tabItem(
-      tabName = 'sidebar_vol_current_sem',
-      h3('Current Semester'),
-      
-      tabsetPanel(id = 'setpanel_vol_current_sem',
-                  
-        #OVERVIEW          
-        tabPanel(
-          title = 'Overview',
-          value='vol_overview_tab',
-          br(),
-          
-          valueBoxOutput(outputId = "total_vol_box"),
-          DTOutput(outputId = "all_vol_table")
-        ),
-        
-        #IN-PERSON TEACHERS
-        tabPanel(
-          title = 'In-Person Teachers',
-          value='vol_in-person_tab',
-          br(),
-          p("Data Table of Volunteers")
-        ),
-        
-        #ONLINE TEACHERS
-        tabPanel(
-          title = 'Online Teachers',
-          value='vol_online_tab',
-          br(), br(),
-          p("Data Table of Volunteers")
-        ),
-        
-        
-        #TUTORS
-        tabPanel(
-          title = 'Tutors',
-          value='vol_tutors_tab',
-          br(), br(),
-          p("Data Table of Volunteers")
-        ),
-        
-        
-        #CLUB LEADERS
-        tabPanel(
-          title = 'Club Leaders',
-          value='vol_club_leaders_tab',
-          br(), br(),
-          p("Data Table of Volunteers")
-        ),
-        
-        #OTHER
-        tabPanel(
-          title = 'Other',
-          value='vol_other_tabs',
-          br(), br(),
-          p("Data Table of Volunteers")
-        )
-        
-      ) #tabsetPanel
-    ), #tabItem
-    
-    #HISTORICAL
-    tabItem(
-      tabName = 'sidebar_vol_historical',
-      h3('Historical'),
-      
-      tabsetPanel(id = 'setpanel_vol_historical',
-        
-        #OVERVIEW          
-        tabPanel(
-          title = 'Overview',
-          value='vol_overview_tab',
-          br(),
-          
-          # valueBoxOutput(outputId = "total_vol_box"),
-          # DTOutput(outputId = "all_vol_table")
-        )
-       
-                  
-      ) #tabsetPanel
-    ), #tabItem
-    
-    
-    
-    #INTAKE
-    tabItem(
-      tabName = 'sidebar_vol_intake',
-      h3('INTAKE'),
-      
-      tabsetPanel(id = 'setpanel_vol_intake',
-                  
-                  #OVERVIEW          
-                  tabPanel(
-                    title = 'Overview',
-                    value='vol_overview_tab',
-                    br(),
-                    
-                    # valueBoxOutput(outputId = "total_vol_box"),
-                    # DTOutput(outputId = "all_vol_table")
-                  )
-                  
-                  
-      ) #tabsetPanel
-    ), #tabItem
-    
-    
-    #SURVEYS
-    tabItem(
-      tabName = 'sidebar_vol_surveys',
-      h3('Surveys'),
-      
-      tabsetPanel(id = 'setpanel_vol_surveys',
-                  
-                  #OVERVIEW          
-                  tabPanel(
-                    title = 'Overview',
-                    value='vol_overview_tab',
-                    br(),
-                    
-                    # valueBoxOutput(outputId = "total_vol_box"),
-                    # DTOutput(outputId = "all_vol_table")
-                  )
-                  
-                  
-      ) #tabsetPanel
-    ), #tabItem
-    
-#---------------------------------------------------------------------------------------
-    
-    #STUDENTS
-    #----------
-    
-    #CURRENT SEMESTER
-    tabItem(
-      tabName = 'sidebar_stud_current_sem',
-      h3('Current Semester'),
-      
-      tabsetPanel(id = 'setpanel_stud_current_sem',
-        
-        #OVERVIEW          
-        tabPanel(
-          title = 'Overview',
-          value='stud_overview_tab',
-          br()#,
-          
-          # valueBoxOutput(outputId = "total_stud_box"),
-          # DTOutput(outputId = "all_stud_table")
-        ),
-        
-        #IN-PERSON STUDENT
-        tabPanel(
-          title = 'In-Person Students',
-          value='stud_in-person_tab',
-          br(),
-          p("Data Table")
-        ),
-        
-        #ONLINE CLASS STUDENTS
-        tabPanel(
-          title = 'Online Students',
-          value='stud_online_tab',
-          br(), br(),
-          p("Data Table")
-        ),
-        
-        
-        #TUTORS
-        tabPanel(
-          title = 'Tutors',
-          value='stud_tutors_tab',
-          br(), br(),
-          p("Data Table")
-        )
-                  
-      ) #tabsetPanel
-    ), #tabItem
-
-    
-    #HISTORICAL
-    tabItem(
-      tabName = 'sidebar_vol_historical',
-      h3('Historical'),
-      
-      tabsetPanel(id = 'setpanel_vol_historical',
-                  
-        #OVERVIEW          
-        tabPanel(
-          title = 'Overview',
-          value='vol_overview_tab',
-          br(),
-          
-          # valueBoxOutput(outputId = "total_vol_box"),
-          # DTOutput(outputId = "all_vol_table")
-        )
-          
-      ) #tabsetPanel
-    ), #tabItem
-    
-    
-    
-    #INTAKE
-    tabItem(
-      tabName = 'sidebar_vol_intake',
-      h3('INTAKE'),
-      
-      tabsetPanel(id = 'setpanel_vol_intake',
-                  
-                  #OVERVIEW          
-                  tabPanel(
-                    title = 'Overview',
-                    value='vol_overview_tab',
-                    br(),
-                    
-                    # valueBoxOutput(outputId = "total_vol_box"),
-                    # DTOutput(outputId = "all_vol_table")
-                  )
-                  
-                  
-      ) #tabsetPanel
-    ), #tabItem
-    
-    
-    #SURVEYS
-    tabItem(
-      tabName = 'sidebar_vol_surveys',
-      h3('Surveys'),
-      
-      tabsetPanel(id = 'setpanel_vol_surveys',
-                  
-                  #OVERVIEW          
-                  tabPanel(
-                    title = 'Overview',
-                    value='vol_overview_tab',
-                    br(),
-                    
-                    # valueBoxOutput(outputId = "total_vol_box"),
-                    # DTOutput(outputId = "all_vol_table")
-                  )
-                  
-                  
-      ) #tabsetPanel
-    ), #tabItem
-
-#---------------------------------------------------------------------------------------
+  #---------------------------------------------------------------------------------------
 
 
     #MATCHING
@@ -292,52 +91,51 @@ body <- dashboardBody(
     tabItem(
       tabName = 'sidebar_matching',
       h3("Matching"),
-      br()
-    
-    ), #tabItem
-    
-    
-    tabItem(
-      tabName = 'setpanel_matching',
-      h3('Match?')
+      br(),
       
-    ), 
-
-#---------------------------------------------------------------------------------------
-
-
-    #ANALYSIS
-    #----------
-    tabItem(
-      tabName = 'sidebar_analysis',
-      h3("Analysis"),
+      tabsetPanel(id = 'setpanel_matching',
+        
+        #OVERVIEW / MATCHES
+        tabPanel(
+          title = 'Matches',
+          value = 'matches_tab', 
+        ),
+        
+        #UNMATCHED
+        tabPanel(
+          title = 'Unmatched',
+          value = 'unmatched_tab', 
+        )
       
-      tabsetPanel(
-        tabPanel("WEE"),
-        tabPanel('Blah')
-      )
-
+      ) #tabsetPanel
     ), #tabItem
-
-    #REPORTS
-    #----------
-    tabItem(
-      tabName = "sidebar_reports",
-      h3('Reports')
     
-    ), #tabItem
 
-#---------------------------------------------------------------------------------------
+  # #---------------------------------------------------------------------------------------
+  # 
+  #   #ANALYSIS
+  #   #----------
+  #   tabItem(
+  #     tabName = 'sidebar_analysis',
+  #     h3("Analysis")
+  #   ), #tabItem
+  # 
+  # #---------------------------------------------------------------------------------------
+  # 
+  #   #REPORTS
+  #   #----------
+  #   tabItem(
+  #     tabName = "sidebar_reports",
+  #     h3('Reports')
+  #   
+  #   ), #tabItem
+  # 
+  # #---------------------------------------------------------------------------------------
 
-    
     #SETTINGS
-    #----------
     tabItem(
-      tabName = 'sidebar_settings',
-      h3("Profile"),
-      br()
-    ) #tabItem
-
+      tabName = 'sidebar_settings'
+    )
 
 
   #----------------
