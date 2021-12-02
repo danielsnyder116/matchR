@@ -16,6 +16,11 @@
   color: white;
 }
 
+/*Make content smaller to make it easier to see everything*/
+.content {
+  margin: 0px 0px 0px 15px;
+}
+
 
 /*Styling of dropdown menu logos*/
 .skin-blue .main-header .navbar .nav>li>a {

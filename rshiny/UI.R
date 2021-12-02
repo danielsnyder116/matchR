@@ -51,7 +51,7 @@ body <- dashboardBody(
   #----------------
   #----------------
   
-  shinyjs::hidden(
+  #shinyjs::hidden(
   
   tabItems(
     
@@ -96,21 +96,41 @@ body <- dashboardBody(
     tabItem(
       tabName = 'sidebar_matching',
       h3("Matching"),
-      br(),
       
       tabsetPanel(id = 'setpanel_matching',
         
+        
+        #UNMATCHED VOLUNTEERS
+        tabPanel(
+          title = 'Unmatched Volunteers',
+          value = 'unmatched_vol_tab', 
+          br(),
+          
+          disabled(actionButton(inputId = "view_vol_button", label = "View Profile")),
+          br(), br(),
+          
+          dataTableOutput(outputId = "unmatched_vols_table")
+        ),
+        
+        #UNMATCHED STUDENTS
+        tabPanel(
+          title = 'Unmatched Students',
+          value = 'unmatched_stud_tab', 
+          br(),
+          
+          disabled(actionButton(inputId = "view_stud_button", label = "View Profile")),
+          br(), #br(),
+          
+          #dataTableOutput(outputId = "unmatched_stud_table")
+        ),
+                  
         #OVERVIEW / MATCHES
         tabPanel(
           title = 'Matches',
           value = 'matches_tab', 
         ),
         
-        #UNMATCHED
-        tabPanel(
-          title = 'Unmatched',
-          value = 'unmatched_tab', 
-        )
+        
       
       ) #tabsetPanel
     ), #tabItem
@@ -148,7 +168,7 @@ body <- dashboardBody(
 
   ) #tabItems
   
-  ) #shinyjs::hidden
+  #) #shinyjs::hidden
 ) #dashboardBody
 
 
