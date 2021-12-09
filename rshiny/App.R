@@ -6,8 +6,7 @@
 #For whatever reason that causes errors
 load_package <- function(package) {
 
-  #If package not installed, INSTALL FROM CRAN
-  #Then attach package
+  #If package not installed, INSTALL FROM CRAN #Then attach package
   if (!require(package, character.only = TRUE)) {
 
     install.packages(package, repos = "http://cran.us.r-project.org", quiet = TRUE)
@@ -22,7 +21,7 @@ load_package <- function(package) {
 
 packages <- c("shiny", "shinyjs", "shinydashboard", "shinyFeedback",
               "shinycssloaders", "DT", "dplyr", "readr", "lubridate",
-              "RSQLite", "dtplyr", "glue", "rsconnect", "shinyauthr")
+              "stringr", "RSQLite", "dtplyr", "glue", "rsconnect", "shinyauthr")
 
 sapply(packages, load_package)
 

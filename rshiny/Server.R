@@ -3,12 +3,10 @@
 #---------------------
 
 
-
-
-
-
 server <- function(id, input, output) {
-  
+
+  #List of active tabs in unmatched section
+  active_tabs <- c()
   
   #Any Reactive Values Needed
   USER <- reactiveVal()
@@ -38,7 +36,6 @@ server <- function(id, input, output) {
     sidebarMenu(id = 'sidebar_tabs',
 
       menuItem("Home", icon = icon("home"), tabName = "sidebar_home"),
-     
       menuItem('MATCHING', tabName = 'sidebar_matching'),
       # menuItem('ANALYSIS', tabName = 'sidebar_analysis', icon=icon('chart-bar')),
       # 
@@ -90,9 +87,7 @@ server <- function(id, input, output) {
   #  UNMATCHED VOLUNTEERS 
   #========================
   
-  volunteers <- reactive({ 
-    volunteers <- read.csv("../../data/volunteers.csv")
-  })
+  volunteers <- reactive({ load_data("volunteers") })
   
   #TODO: Identify key cols to show in unmatched table
   #Number of days since signed up

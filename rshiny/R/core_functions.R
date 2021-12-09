@@ -16,21 +16,40 @@ load_data <- function(table_name) {
   return(data)
 }
 
+get_reactive_values <- function() {
+  
+}
 
-make_profile_tab_info <- function(id_input, name_input, role_input, status_input) {
+update_reactive_values <- function(rv_input, df_value, row_value){
+  
+  #Set reactive values 
+  rv_input$id <- df_value$id[row_value]
+  rv_input$name <- paste(df_value$first_name[row_value], df_value$last_name[row_value])
+  rv_input$role <- "Volunteer"
+  
+  print(glue("Updated reactive values - current indiv: {rv_input$name}"))
+  
+}
+
+
+
+
+
+
+make_profile_tab_info <- function(name_input, role_input) {
  print("Formatting individual details to display in tab")
+  
+  #id_input, status_input 
+  #"ID: ", id_input, "<br>", 
+  #"Status: ", status_input, "<br>"
   
   #TODO: Convert to unit test
   #For testing
-  # id_input <- "12345678"
   # name_input <- "Danny Snyder"
   # role_input <- "Volunteer"
-  # status_input <- "Active"
 
-  tab_info <-  HTML(paste0("ID: ", id_input, "<br>", 
-                           "Name: ", name_input, "<br>",
-                           "Role: ", role_input, "<br>",
-                           "Status: ", status_input, "<br>"))
+  tab_info <-  HTML(paste0("Name: ", name_input, "<br>",
+                           "Role: ", role_input, "<br>"))
   
   return (tab_info)
 

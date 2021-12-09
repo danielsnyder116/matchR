@@ -107,6 +107,7 @@ body <- dashboardBody(
           br(),
           
           disabled(actionButton(inputId = "view_vol_button", label = "View Profile")),
+          disabled(actionButton(inputId = "initial_match_vol_button", label = "Match")),
           br(), br(),
           
           dataTableOutput(outputId = "unmatched_vols_table")
