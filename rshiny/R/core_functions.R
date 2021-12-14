@@ -16,6 +16,7 @@ load_data <- function(table_name) {
   return(data)
 }
 
+#Need to get rvs from tab to then set as current rv when viewing a tab
 get_reactive_values <- function() {
   
 }
@@ -36,7 +37,7 @@ update_reactive_values <- function(rv_input, df_value, row_value){
 
 
 
-make_profile_tab_info <- function(name_input, role_input) {
+make_profile_tab_info <- function(id_input, name_input, role_input) {
  print("Formatting individual details to display in tab")
   
   #id_input, status_input 
@@ -48,8 +49,9 @@ make_profile_tab_info <- function(name_input, role_input) {
   # name_input <- "Danny Snyder"
   # role_input <- "Volunteer"
 
-  tab_info <-  HTML(paste0("Name: ", name_input, "<br>",
-                           "Role: ", role_input, "<br>"))
+  tab_info <-  div(HTML(paste0("<b>ID:</b> ", id_input, "<br>",
+                               "<b>Name:</b> ", name_input, "<br>",
+                               "<b>Role:</b> ", role_input, "<br>")), style ='font-size: 12px;')
   
   return (tab_info)
 

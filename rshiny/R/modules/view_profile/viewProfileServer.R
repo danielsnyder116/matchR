@@ -19,6 +19,23 @@ viewProfileServer <- function(id, rv_input, session_input) {
     
     #Bring in all functions needed only for viewProfile
     source("./R/modules/view_profile/viewProfile_functions.R", local=TRUE)
+    
+    data <- reactive({ get_indiv_data(rv_input$id) %>% pivot_longer(!id, names_to ="field") %>%
+            select(-id) })
+    
+    
+  
+    
+    #output[[glue("")]] <- renderText()
+    
+    output[[glue("data_table_{rv_input$id}")]] <- renderDT({
+      datatable(data()[, c("field", "value")],
+                selection = 'single',
+                rownames = FALSE,
+                #colnames =,
+                options = list())
+    })
+    
 
     # #Function to get user info
     # #tables[[]] <- get_indiv_data
@@ -30,9 +47,8 @@ viewProfileServer <- function(id, rv_input, session_input) {
     # 
     # test$destroy()
     
-    #CLOSE PROFILE TAB - remember, no ns in Server!! Only in UI
-    # OE[[glue("rv_input$id_oe_1")]] <<- 
-    observeEvent(input[[glue("close_tab_button_{rv_input$id}")]], {
+    #CLOSE PROFILE TAB
+    observeEvent(input[[glue("close_tab_button_{rv_input$id}")]], ignoreInit = TRUE, {
       
                                           print("Clicked close tab button")
              
@@ -41,6 +57,10 @@ viewProfileServer <- function(id, rv_input, session_input) {
                                           removeTab(inputId = "setpanel_matching", target = ns(glue("{rv_input$id}_tab")),
                                                     session = session_input)
                                           
+                                          #"Destroying" all of the OEs to ensure proper functioning
+                                          #OE[[glue("{rv_input$id}_oe_1")]] <- 
+                                          #OE[[glue("{rv_input$id}_oe_1")]]$destroy()
+                                          
                                           print(glue("Closed {rv_input$id}_tab"))
     })
     
@@ -48,6 +68,9 @@ viewProfileServer <- function(id, rv_input, session_input) {
     # x <- c(1:10)
     # lapply(OE, )
     # OE[[glue("rv_input$id_oe{x}")]]
+    
+    
+   
     
     
   })

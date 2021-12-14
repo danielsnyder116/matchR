@@ -6,7 +6,7 @@ setwd("/Users/Daniel/Desktop/WEC/Shiny/database")
 
 source("/Users/Daniel/Desktop/WEC/Shiny/matchr/db/db_functions.R")
 
-DB_PATH <- glue("/Users/Daniel/Desktop/WEC/Shiny/database/active/matchr_db_{Sys.Date()}.db")
+DB_PATH <- glue("/Users/Daniel/Desktop/WEC/Shiny/database/active/matchr_db_draft.db")
 DB_NAME <- strsplit(DB_PATH, split = "active/")[[1]][2]
 
 conn <- dbConnect(SQLite(), DB_PATH)

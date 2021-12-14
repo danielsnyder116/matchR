@@ -11,9 +11,8 @@ viewProfileUI <- function(id, rv_input) {
            value = ns(glue("{rv_input$id}_tab")),
            
            div(class = 'standard-btn', actionButton(inputId = ns(glue("close_tab_button_{rv_input$id}")), 
-                                                    label = "Close Tab"), style="padding-left:210px;"),  #910
+                                                    label = "Close Tab"), style="padding-left:920px;"), 
            
-           br(),
            
            tabsetPanel(id=ns(glue("details_{rv_input$id}")),
                        
@@ -21,7 +20,9 @@ viewProfileUI <- function(id, rv_input) {
                                 value = ns("profile_tab"),
                                 
                                 
-                                br()
+                                br(),
+                                
+                                dataTableOutput(outputId = ns(glue("data_table_{rv_input$id}")))
                        ),
                        
                        tabPanel(title = "Current Semester",

@@ -95,7 +95,7 @@ body <- dashboardBody(
     #----------
     tabItem(
       tabName = 'sidebar_matching',
-      h3("Matching"),
+      h4("Matching"),
       
       tabsetPanel(id = 'setpanel_matching',
         

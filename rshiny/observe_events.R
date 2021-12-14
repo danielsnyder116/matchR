@@ -35,9 +35,11 @@ observeEvent(input$view_vol_button, ignoreInit = TRUE, {
   disable(id="view_vol_button")
   disable(id="initial_match_vol_button")
   
-  indiv_info <<- make_profile_tab_info(values$name, values$role)
-  
+  #Prepare inputs for viewProfile module
+  indiv_info <<- make_profile_tab_info(values$id, values$name, values$role)
   default_session <- getDefaultReactiveDomain()
+  
+  #Launch module
   viewProfileServer(id='view_vol', values, default_session)
   
   #PREVENT DUPLICATE TABS
@@ -68,10 +70,26 @@ observeEvent(input$view_vol_button, ignoreInit = TRUE, {
  
 })
 
+#GET CURRENT ACTIVE TAB
+observeEvent(input$setpanel_matching, {
+  
+  print(glue("Current active tab is {isolate(input$setpanel_matching)}"))
+  
+  #get rv
+  
+  #set current individual
+  update_reactive_values()
+
+})
 
 
-
-
+#VOLUNTEER PROFILE TAB CLICKED
+#need to make sure that when a tab is clicked on, it updates reactive values
+# observeEvent(, {
+#   
+#   
+#   
+# })
 
 
 #START MANUAL MATCH

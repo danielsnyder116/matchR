@@ -6,7 +6,8 @@
 
 get_indiv_data <- function(id_input){
   
-  data <- volunteers %>% filter(id == id_input)
+  data <- load_data("volunteers") %>% filter(id == as.integer(id_input))
   
   return (data)
 }
+
