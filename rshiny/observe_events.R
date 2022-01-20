@@ -5,15 +5,14 @@
 
 #CANCEL LOGIN
 observeEvent(input$cancel_login_button, {
-
+  print("OE: Cancel login button clicked")
+  
   removeModal()
-
-
 })
 
 #VOLUNTEER TABLE ROW CLICKED
 observeEvent(input$unmatched_vols_table_rows_selected, ignoreInit = TRUE, {
-  print("Clicked on volunteer table row")
+  print("OE: Clicked on volunteer table row")
   
   #Provides the row index of the row selected/clicked
   row <- input$unmatched_vols_table_rows_selected
@@ -30,7 +29,7 @@ observeEvent(input$unmatched_vols_table_rows_selected, ignoreInit = TRUE, {
 
 #VIEW VOLUNTEER PROFILE
 observeEvent(input$view_vol_button, ignoreInit = TRUE, {
-  print("Clicked view_vol_button")
+  print("OE: Clicked view_vol_button")
   
   disable(id="view_vol_button")
   disable(id="initial_match_vol_button")
@@ -70,17 +69,17 @@ observeEvent(input$view_vol_button, ignoreInit = TRUE, {
  
 })
 
-#GET CURRENT ACTIVE TAB
-observeEvent(input$setpanel_matching, {
-  
-  print(glue("Current active tab is {isolate(input$setpanel_matching)}"))
-  
-  #get rv
-  
-  #set current individual
-  update_reactive_values()
-
-})
+# #GET CURRENT ACTIVE TAB
+# observeEvent(input$setpanel_matching, {
+#   
+#   print(glue("OE: Current active tab is {isolate(input$setpanel_matching)}"))
+#   
+#   #get rv
+#   
+#   #set current individual
+#   update_reactive_values()
+# 
+# })
 
 
 #VOLUNTEER PROFILE TAB CLICKED
@@ -94,6 +93,7 @@ observeEvent(input$setpanel_matching, {
 
 #START MANUAL MATCH
 observeEvent(input$initial_match_vol_button, {
+  print("OE: Initial match vol button clicked")
   
   showModal(
     modalDialog(title = "Manual Match", footer = NULL,
@@ -102,7 +102,6 @@ observeEvent(input$initial_match_vol_button, {
               value="list of students!",
               label = "Select a student to pair with the volunteer")    
              ),
-    
     
     actionButton(inputId = "secondary_match_button", label = "Match")
   )

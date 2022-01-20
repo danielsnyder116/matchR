@@ -13,20 +13,23 @@ conn <- dbConnect(SQLite(), DB_PATH)
 
 #Create DB
 create_db(DB_PATH)
-getwd()
 
 #Adding users table by saving pre-made csv
 df_users <- read_csv("../data/initial_users.csv")
 df_historical_vols <- read_csv("/Users/Daniel/Desktop/WEC/Data/Non-GS/All (2006 - Present)/all_volunteers_2006_spring_2021.csv") %>%
                             mutate(across(everything(), as.character))
 
-#
+#Data volunteers submitted via google form
 volunteers <- read_csv("../data/volunteers.csv") 
-volunteers <- volunteers %>% mutate(id = 1:nrow(volunteers)) %>% 
-                  select(id, everything())
+volunteers <- volunteers %>% mutate(id = 1:nrow(volunteers)) %>% select(id, everything())
+
+#Data students submitted via google forms
+students <- read.csv("../data/students.csv")
+students <- students %>% mutate(id = 1:nrow(students)) %>% select(id, everything())
 
 #Add tables
 update_table(DB_PATH, "user", df_users, overwrite = TRUE)
+update_table(DB_PATH, "students", students, overwrite = TRUE)
 update_table(DB_PATH, "vols_historical", df_historical_vols, overwrite = TRUE)
 update_table(DB_PATH, "volunteers", volunteers, overwrite = TRUE)
 

@@ -3,10 +3,6 @@
 #---------------------
 
 
-#'
-#'
-#'
-#'
 #'--------------------------------------------------
 create_db <- function(db_path_input) {
   
@@ -24,10 +20,6 @@ create_db <- function(db_path_input) {
 }
 
 
-
-#'
-#'
-#'
 #'
 #'--------------------------------------------------
 update_table <- function(db_path, table_name, table_contents, overwrite = FALSE, append = TRUE) {
@@ -45,6 +37,8 @@ update_table <- function(db_path, table_name, table_contents, overwrite = FALSE,
     dbDisconnect(conn)
   }
   
+  print(glue("Updated {table_name}."))
+  
 }
 
 drop_table <- function(db_path, table_name) {
@@ -52,6 +46,8 @@ drop_table <- function(db_path, table_name) {
   conn <- dbConnect(SQLite(), db_path)
   dbExecute(conn, glue('DROP TABLE {table_name};'))
   dbDisconnect(conn)
+  
+  print(glue("Dropped {table_name}."))
   
 }
 

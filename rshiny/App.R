@@ -39,9 +39,7 @@ sapply(packages, load_package)
 options(shiny.fullstacktrace = TRUE)
 options(shiny.port = 1993)
 
-
 setwd("/Users/Daniel/Desktop/WEC/Shiny/matchR/rshiny")
-
 
 source("R/global.R")
 source("R/core_functions.R")

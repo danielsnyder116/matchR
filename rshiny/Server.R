@@ -36,9 +36,8 @@ server <- function(id, input, output) {
     sidebarMenu(id = 'sidebar_tabs',
 
       menuItem("Home", icon = icon("home"), tabName = "sidebar_home"),
-      menuItem('MATCHING', tabName = 'sidebar_matching'),
+      menuItem('Matching', tabName = 'sidebar_matching'),
       # menuItem('ANALYSIS', tabName = 'sidebar_analysis', icon=icon('chart-bar')),
-      # 
       # menuItem('REPORTS', tabName = 'sidebar_reports', icon = icon('file-alt')),
       # menuItem('EXPORT DATA', tabName = 'sidebar_export'),
       menuItem('Settings', tabName = 'sidebar_settings')
@@ -103,6 +102,10 @@ server <- function(id, input, output) {
     )
   })
     
+  
+  
+  
+  
   
  
   #================
