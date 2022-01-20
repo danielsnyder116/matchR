@@ -100,6 +100,19 @@ body <- dashboardBody(
       tabsetPanel(id = 'setpanel_matching',
         
         
+        #UNMATCHED STUDENTS
+        tabPanel(
+          title = 'Unmatched Students',
+          value = 'unmatched_stud_tab', 
+          br(),
+          
+          disabled(actionButton(inputId = "view_stud_button", label = "View Profile")),
+          disabled(actionButton(inputId = "initial_match_stud_button", label = "Match")),
+          br(), br(),
+          
+          dataTableOutput(outputId = "unmatched_stud_table")
+        ),
+        
         #UNMATCHED VOLUNTEERS
         tabPanel(
           title = 'Unmatched Volunteers',
@@ -111,18 +124,6 @@ body <- dashboardBody(
           br(), br(),
           
           dataTableOutput(outputId = "unmatched_vols_table")
-        ),
-        
-        #UNMATCHED STUDENTS
-        tabPanel(
-          title = 'Unmatched Students',
-          value = 'unmatched_stud_tab', 
-          br(),
-          
-          disabled(actionButton(inputId = "view_stud_button", label = "View Profile")),
-          br(), #br(),
-          
-          #dataTableOutput(outputId = "unmatched_stud_table")
         ),
                   
         #OVERVIEW / MATCHES

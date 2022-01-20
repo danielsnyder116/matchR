@@ -17,7 +17,7 @@ names(df) <- c('timestamp', 'notes', 'email_address', 'class_interest', 'eng_lev
                'employ_affected_by_covid', 'highest_education', 'want_same_tutor', 
                'tutor_name', 'time_available',  'where_hear_wec', 'trash_1')
                
-df <- df %>% select(-trash_1)
+df <- df %>% select(-trash_1) %>% mutate(role = "Student", status = "Unmatched")
 
 write.csv(df, "../../data/students.csv", row.names = FALSE) 
 

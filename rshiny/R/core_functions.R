@@ -17,16 +17,17 @@ load_data <- function(table_name) {
 }
 
 #Need to get rvs from tab to then set as current rv when viewing a tab
-get_reactive_values <- function() {
-  
-}
+#TODO
+# get_reactive_values <- function() {
+#   
+# }
 
 update_reactive_values <- function(rv_input, df_value, row_value){
   
   #Set reactive values 
   rv_input$id <- df_value$id[row_value]
   rv_input$name <- paste(df_value$first_name[row_value], df_value$last_name[row_value])
-  rv_input$role <- "Volunteer"
+  rv_input$role <- df_value$role[row_value]
   
   print(glue("Updated reactive values - current indiv: {rv_input$name}"))
   

@@ -169,7 +169,8 @@ df_criteria <- df %>% select('first_name', 'last_name', 'email_address',
                              'avail_before_sep_27_indicator_2',
                              'other_tutor_sched_info_2'
 )
-getwd()
+
+df_criteria <- df_criteria %>% mutate(role = "Volunteer", status = "Unmatched")
 write.csv(df_criteria, "../../data/volunteers.csv", row.names = FALSE) 
 
 #For cases where 2nd and 3rd choice roles are not filled, drop
