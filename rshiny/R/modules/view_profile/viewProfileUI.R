@@ -16,13 +16,12 @@ viewProfileUI <- function(id, rv_input) {
            
            tabsetPanel(id=ns(glue("details_{rv_input$id}")),
                        
-                       tabPanel(title = "Profile",
-                                value = ns("profile_tab"),
+                       tabPanel(title = "Recommended Matches",
+                                value = ns("match_recs_tab"),
+                                
+                              br()  
                                 
                                 
-                                br(),
-                                
-                                dataTableOutput(outputId = ns(glue("data_table_{rv_input$id}")))
                        ),
                        
                        tabPanel(title = "Current Semester",
@@ -40,7 +39,16 @@ viewProfileUI <- function(id, rv_input) {
                                 
                        ),
                        
-                       tabPanel(title = "History",
+                       tabPanel(title = "Profile",
+                                value = ns("profile_tab"),
+                                
+                                
+                                br(),
+                                
+                                dataTableOutput(outputId = ns(glue("data_table_{rv_input$id}")))
+                       ),
+                       
+                       tabPanel(title = "All History",
                                 value = ns("history_tab")
                        ),
            ) #tabsetPanel   
