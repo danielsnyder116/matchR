@@ -5,6 +5,8 @@
 library(dplyr)
 library(stringr)
 library(tidyr)
+library(lubridate)
+library(tibble)
 
 df <- read.csv("./../../data/Winter 2022 Online Tutoring Registration (Responses) - Form Responses 1.csv")
 
@@ -16,7 +18,7 @@ names(df) <- c('timestamp', 'notes', 'email_address', 'class_interest', 'eng_lev
                'employ_affected_by_covid', 'highest_education', 'want_same_tutor', 
                'tutor_name', 'time_available',  'where_hear_wec', 'trash_1')
                
-df <- df %>% select(-trash_1) %>% mutate(role = "Student", status = "Unmatched")
+df <- df %>% select(-c(trash_1, notes)) %>% mutate(role = "Student", status = "Unmatched")
 
              #removing most of the Spanish translations
 df <- df %>% mutate(across(c(class_interest, eng_level, gender, ethnicity, race, 
@@ -40,9 +42,31 @@ df <- df %>% mutate(across(c(class_interest, eng_level, gender, ethnicity, race,
              mutate(across(starts_with("time_avail"), ~str_remove(., "EST"))) %>%
              mutate(across(starts_with("time_avail"), ~str_remove(., "/"))) %>%
              mutate(across(everything(), ~str_squish(.)))
-  
-            
 
+  
+#Can't do two hours of speaking AND a Group - only case
+#Shorten class_interest
+df <- df %>% mutate(class_interest = case_when(str_detect(class_interest, "Conversation and") ~ "Conversation + Writing",
+                                               str_detect(class_interest, "Conversation: 1") ~ "Conversation: 1 hour",
+                                               str_detect(class_interest, "Conversation: 2") ~ "Conversation: 2 hours",
+                                               TRUE ~ class_interest),
+                    
+                    want_same_tutor = case_when(str_detect(want_same_tutor, "new student") ~ "Needs New Tutor",
+                                                str_detect(want_same_tutor, "new tutor") ~ "Needs New Tutor",
+                                                str_detect(want_same_tutor, "and writing") ~ "Keep Same Tutor(s)",
+                                                str_detect(want_same_tutor, "conversation tutor") ~ "Keep Same Tutor(s)",
+                                                TRUE ~ want_same_tutor),
+                    
+                    
+                    timestamp = as.character(mdy_hms(timestamp)),
+                    birthday = as.character(mdy(birthday))
+                                             
+            )
+
+
+
+#Adding age column based on birthday
+df <- df %>% add_column(age = as.integer(year(now()) - year(ymd(df$birthday))) , .after = "birthday")
 
 write.csv(df, "../../data/students.csv", row.names = FALSE) 
 
