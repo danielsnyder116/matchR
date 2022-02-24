@@ -8,6 +8,10 @@ library(tidyr)
 library(lubridate)
 library(tibble)
 
+#TUTORING ONLY FORM
+#-------------------
+
+
 df <- read.csv("./../../data/Winter 2022 Online Tutoring Registration (Responses) - Form Responses 1.csv")
 
 names(df) <- c('timestamp', 'notes', 'email_address', 'class_interest', 'eng_level',
@@ -66,7 +70,20 @@ df <- df %>% mutate(class_interest = case_when(str_detect(class_interest, "Conve
 
 
 #Adding age column based on birthday
-df <- df %>% add_column(age = as.integer(year(now()) - year(ymd(df$birthday))) , .after = "birthday")
+df <- df %>% add_column(age = (year(now()) - year(ymd(df$birthday))) , .after = "birthday") %>%
+             mutate(age = as.character(age))
+
 
 write.csv(df, "../../data/students.csv", row.names = FALSE) 
+
+
+
+
+#GROUP CLASS + TUTORING FORM
+#---------------------------
+
+
+
+
+
 

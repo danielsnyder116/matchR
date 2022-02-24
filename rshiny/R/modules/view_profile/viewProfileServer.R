@@ -20,7 +20,7 @@ viewProfileServer <- function(id, rv_input, session_input, role_input) {
     #Bring in all functions needed only for viewProfile
     source("./R/modules/view_profile/viewProfile_functions.R", local=TRUE)
     
-    data <- reactive({ get_indiv_form_data(rv_input$id, role_input) %>% 
+    profile_data <- reactive({ get_profile(rv_input$id, role_input) %>% 
                             pivot_longer(!id, names_to ="field") %>% select(-id)
     })
     
@@ -30,7 +30,7 @@ viewProfileServer <- function(id, rv_input, session_input, role_input) {
     #output[[glue("")]] <- renderText()
     
     output[[glue("data_table_{rv_input$id}")]] <- renderDT({
-        datatable(data()[, c("field", "value")],
+        datatable(profile_data()[, c("field", "value")],
                   
                   selection = 'single',
                   rownames = FALSE,

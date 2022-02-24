@@ -58,6 +58,7 @@ server <- function(id, input, output) {
   #------------------
   
   VOL_FORM_TABLE <<- "volunteers"
+  VOL_TUTOR_TABLE <<- "vol_tutors"
   VOL_HIST_TABLE <<- "vols_historical"
   
   STUD_FORM_TABLE <<- "students"
@@ -77,7 +78,9 @@ server <- function(id, input, output) {
               #Loading data and saving in list to access later
               #Want to ensure that all data updates at the same time
               db_data <- list( VOL_FORM = reactive({  load_data(VOL_FORM_TABLE) }),
-                               VOL_HIST = reactive({ load_data(VOL_HIST_TABLE) }),
+                               VOL_TUTOR = reactive({  load_data(VOL_TUTOR_TABLE) }),
+                               
+                               #VOL_HIST = reactive({ load_data(VOL_HIST_TABLE) }),
                                STUD_FORM = reactive({ load_data(STUD_FORM_TABLE) })#,
                                #STUD_HIST = reactive({ load_data(STUD_HIST_TABLE) })
                              )
@@ -110,9 +113,9 @@ server <- function(id, input, output) {
   #Outputs
   #------------------
   output$vol_hist_table <- renderDT({
-    datatable(vol_hist()[, c("category", "day", "name", "email", "phone", "new_volunteer","semester",
-                               "year", "tutor_type", "class", "time", "club_name", "nickname")],
-
+    datatable(vol_hist(), #[, c("category", "day", "name", "email", "phone", "new_volunteer","semester",
+                               #"year", "tutor_type", "class", "time", "club_name", "nickname")],
+              #editable = list(target = "row"),
               rownames = FALSE,
               #colnames = c(),
               options = list()
@@ -133,18 +136,44 @@ server <- function(id, input, output) {
   #  UNMATCHED VOLUNTEERS 
   #========================
   
-  unm_volunteers <- reactive({ db_data()$VOL_FORM() %>% filter(status == "Unmatched") })
+  unm_volunteers <- reactive({ db_data()$VOL_TUTOR() %>% filter(status == "Unmatched") })
   
   #TODO: Identify key cols to show in unmatched table
   #Number of days since signed up
   #New or returning volunteer
   output$unmatched_vols_table <- renderDT({
-    datatable(unm_volunteers()[, c('first_name', 'last_name', 'gender','timestamp',
-                                 'returning_indicator' )],
+    datatable(unm_volunteers(), #[, c('first_name', 'last_name', 'gender','timestamp','returning_indicator' )],
               
+              #editable = list(target = "row"),
               selection =  'single',
               rownames = FALSE,
-              #colnames = c(),
+              # colnames = c( 'First Name', 'Last Name', 'Email', 'Gender', 'Native Language(s)',
+              #               'Other Language(s)', 'Prior Experience?', 'Teaching Certificates', 
+              #               'Education Credentials', 'Timestamp', 'Proof of Vaccination', 
+              #               'Returning Volunteer?', 'Previous Role', 'Students Already Tutoring', 
+              #               'Reregister Acknowledgement 1', 'Reregister Acknowledgement 2', 
+              #               'Desired Start Date', 'Details Regarding Multiple Dates', 'Want New Student?', 
+              #               'Applied in the Past & Not Placed?', 'Had Onboard Call With Staff?', 
+              #               
+              #               'Preferred Role 1', 'Preferred Time 1', 'Online AM Availability 1', 
+              #               'In-Person AM Availability 1', 'Online PM Availability 1', 
+              #               'In-Person PM Availability 1', 'Online Citizenship Availability 1', 
+              #               'Class Level Preference(s)', 'Prefer to Teach Solo? 1', 'Co-Teacher Info 1', 
+              #               'Teaching Format Preference(s) 1', 'Other Class Schedule Info 1', 
+              #               
+              #               'Tutor Type Preference 1', 'Preferred Tutor Slot 1', 'AM Tutoring Availability 1', 
+              #               'PM Tutoring Availability 1', 'Weekend Tutoring Availability 1', 
+              #               'Tutor Level Preference(s) 1', 'Number of New Students 1', 
+              #               'Available Before Specific Date? 1', 'Other Tutoring Schedule Info 1', 
+              #               'Preferred Role 2', 'Preferred Time 2', 'Online AM Availability 2', 
+              #               'In-Person AM Availability 2', 'Online PM Availability 2', 
+              #               'In-Person PM Availability 2', 'Online Citizenship Availability 2', 
+              #               'Class Level Preference(s) 2', 'Prefer to Teach Solo? 2', 'Co-Teacher Info 2', 
+              #               'Teaching Format Preference(s) 2', 'Open to Accepting Both Choices? 1', 
+              #               'Other Class Schedule Info 2', 'Tutor Type Preference 2', 'Preferred Tutor Slot 2',
+              #               'AM Tutoring Availability 2', 'PM Tutoring Availability 2', 'Tutor Level Preference(s) 2',
+              #               'Number of New Students 2', 'Open to Accepting Both Choices? 2', 
+              #               'Available Before Specific Date? 2', 'Other Tutoring Schedule Info 2' ),
               options = list()
     )
   })
@@ -163,10 +192,20 @@ server <- function(id, input, output) {
   #Outputs
   #------------------
   output$unmatched_stud_table <- renderDT({
-    datatable(unm_students()[, c('first_name', 'last_name', 'gender', 'native_lang', 'timestamp')],
+    datatable(unm_students(), #[, c('first_name', 'last_name', 'gender', 'native_lang', 'timestamp')],
               
+              #editable = list(target = "row"),
               rownames = FALSE,
-              #colnames = c(),
+              colnames = c( "ID", "Timestamp", "Email","Tutoring Selection","English Level",
+                           "Last Name","First Name","Phone Number","Address","City / State / Zip",
+                           "Birthday", "Age", "Gender","Home Country","Native Language(s)",
+                           "Ethnicity","Race","Employment Status (Student)","Monthly Income (Student)",
+                           "Number of Dependents","Employment Status (Spouse)","Monthly Income (Spouse)",
+                           "Employment Affected by Covid?","Highest Education","Request Same Tutor(s)?",
+                           "Requested Tutor Name(s)","Time Slot 1","Time Slot 2","Time Slot 3",
+                           "Time Slot 4","Time Slot 5","Time Slot 6","Time Slot 7","Time Slot 8",
+                           "Time Slot 9","Time Slot 10","How You Heard About WEC","Role", "Status"),
+              
               selection = 'single',
               options = list()
     )

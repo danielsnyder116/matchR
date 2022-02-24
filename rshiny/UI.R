@@ -110,7 +110,7 @@ body <- dashboardBody(
           disabled(actionButton(inputId = "initial_match_stud_button", label = "Match")),
           br(), br(),
           
-          dataTableOutput(outputId = "unmatched_stud_table")
+          div(dataTableOutput(outputId = "unmatched_stud_table"), style="overflow-x:scroll;white-space:nowrap;"), 
         ),
         
         #UNMATCHED VOLUNTEERS
@@ -123,7 +123,7 @@ body <- dashboardBody(
           disabled(actionButton(inputId = "initial_match_vol_button", label = "Match")),
           br(), br(),
           
-          dataTableOutput(outputId = "unmatched_vols_table")
+          div(dataTableOutput(outputId = "unmatched_vols_table"), style="overflow-x:scroll;white-space:nowrap;")
         ),
                   
         #OVERVIEW / MATCHES
