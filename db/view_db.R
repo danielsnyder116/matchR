@@ -2,14 +2,20 @@
 #       VIEW DB
 #---------------------
 
+source("./../db/db_functions.R")
+
 conn <- dbConnect(SQLite(), DB_PATH)
 dbListTables(conn)
 
 
-df <- load_data("students")
+df <- load_data("vol_tutors")
 
-options <- df %>% select(class_interest)
-df_1 <- load_data("volunteers")
+glimpse(df)
 
+df <- df %>% mutate(across(everything(), ~as.character(.))) %>% replace_na(list(age = NA_character_))
+
+
+
+update_table(DB_PATH, "vol_tutors", df, overwrite = TRUE)
 
 dbDisconnect(conn)

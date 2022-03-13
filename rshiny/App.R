@@ -37,7 +37,7 @@ sapply(packages, load_package)
 # library(rsconnect)
 
 options(shiny.fullstacktrace = TRUE)
-options(shiny.port = 1993)
+#options(shiny.port = 1993)
 
 setwd("/Users/Daniel/Desktop/WEC/Shiny/matchR/rshiny")
 

@@ -12,12 +12,12 @@ observeEvent(input$cancel_login_button, {
 
 #VOLUNTEER TABLE ROW CLICKED
 observeEvent(input$unmatched_vols_table_rows_selected, ignoreInit = TRUE, {
-  print("OE: Clicked on volunteer table row")
+  print("OE: Clicked on volunteer row")
   
   #Provides the row index of the row selected/clicked
   row <- input$unmatched_vols_table_rows_selected
   
-  update_reactive_values(rv, unm_volunteers(), row)
+  update_reactive_values(unm_volunteers(), row)
   
   enable(id = "view_vol_button")
   enable(id = "initial_match_vol_button")
@@ -40,7 +40,7 @@ observeEvent(input$view_vol_button, ignoreInit = TRUE, {
   default_session <- getDefaultReactiveDomain()
   
   #Launch module
-  viewProfileServer(id='view_vol', rv, default_session, "Volunteer")
+  viewProfileServer(id='view_vol', default_session)
   
   #PREVENT DUPLICATE TABS
   #If tab already open, view that tab with error
@@ -56,7 +56,7 @@ observeEvent(input$view_vol_button, ignoreInit = TRUE, {
     hideFeedback(inputId = "duplicate_tab")
     
     #Adding new tab (see module for UI structure)
-    insertTab(inputId = "setpanel_matching", viewProfileUI(id="view_vol", rv)) 
+    insertTab(inputId = "setpanel_matching", viewProfileUI(id="view_vol")) 
     
     #Bring new tab into focus
     updateTabsetPanel(inputId = "setpanel_matching", selected = glue("view_vol-{rv$id}_tab"))
@@ -73,12 +73,12 @@ observeEvent(input$view_vol_button, ignoreInit = TRUE, {
 
 #STUDENT TABLE ROW CLICKED
 observeEvent(input$unmatched_stud_table_rows_selected, ignoreInit = TRUE, {
-  print("OE: Clicked on studenttable row")
+  print("OE: Clicked on student row")
   
   #Provides the row index of the row selected/clicked
   row <- input$unmatched_stud_table_rows_selected
   
-  update_reactive_values(rv, unm_students(), row)
+  update_reactive_values(unm_students(), row)
   
   enable(id = "view_stud_button")
   enable(id = "initial_match_stud_button")
@@ -97,7 +97,7 @@ observeEvent(input$view_stud_button, ignoreInit = TRUE, {
   default_session <- getDefaultReactiveDomain()
   
   #Launch module
-  viewProfileServer(id='view_stud', default_session, "Student")
+  viewProfileServer(id='view_stud', default_session)
   
   #PREVENT DUPLICATE TABS
   #If tab already open, view that tab with error
@@ -113,7 +113,7 @@ observeEvent(input$view_stud_button, ignoreInit = TRUE, {
     hideFeedback(inputId = "duplicate_tab")
     
     #Adding new tab (see module for UI structure)
-    insertTab(inputId = "setpanel_matching", viewProfileUI(id="view_stud", rv)) 
+    insertTab(inputId = "setpanel_matching", viewProfileUI(id="view_stud")) 
     
     #Bring new tab into focus
     updateTabsetPanel(inputId = "setpanel_matching", selected = glue("view_stud-{rv$id}_tab"))

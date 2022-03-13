@@ -16,20 +16,25 @@ load_data <- function(table_name) {
   return(data)
 }
 
+
+
+
+
 #Need to get rvs from tab to then set as current rv when viewing a tab
 #TODO
 # get_reactive_values <- function() {
 #   
 # }
 
-update_reactive_values <- function(rv_input, df_value, row_value){
+update_reactive_values <- function(df_value, row_value){
   
   #Set reactive values 
-  rv_input$id <- df_value$id[row_value]
-  rv_input$name <- paste(df_value$first_name[row_value], df_value$last_name[row_value])
-  rv_input$role <- df_value$role[row_value]
+  rv$id <<- df_value$id[row_value]
+  rv$name <<- paste(df_value$first_name[row_value], df_value$last_name[row_value])
+  rv$role <<- df_value$role[row_value]
+  rv$status<<- df_value$status[row_value]
   
-  print(glue("Updated reactive values - current indiv: {rv_input$name}"))
+  print(glue("Updated reactive values - current indiv:  {rv$id} {rv$name} {rv$role}"))
   
 }
 
@@ -57,3 +62,17 @@ make_profile_tab_info <- function(id_input, name_input, role_input) {
   return (tab_info)
 
 }
+
+
+# get_rv_from_profile_tab <- function(tab_input) {
+#   print("Extracting individual from tab html")
+#   
+#   #Set reactive values 
+#   rv_input$id <<-
+#   rv_input$name <<- 
+#   rv_input$role <<- 
+#   rv_input$status <<- 
+#   
+#   print(glue("Updated reactive values - current indiv: {rv$name} {rv$role}"))
+#   
+# }
