@@ -9,13 +9,14 @@ setwd("/Users/Daniel/Desktop/WEC/Shiny/database")
 
 source("/Users/Daniel/Desktop/WEC/Shiny/matchr/db/db_functions.R")
 
-DB_PATH <- glue("/Users/Daniel/Desktop/WEC/Shiny/database/active/matchr_db_draft.db")
+DB_PATH <- glue("/Users/Daniel/Desktop/WEC/Shiny/database/active/matchr.db")
 DB_NAME <- strsplit(DB_PATH, split = "active/")[[1]][2]
 
 conn <- dbConnect(SQLite(), DB_PATH)
 
 #Create DB
 create_db(DB_PATH)
+#drop_table(DB_PATH, "volunteers")
 
 #Adding users table by saving pre-made csv
 df_users <- read.csv("../data/initial_users.csv")
@@ -27,7 +28,7 @@ volunteers <- read.csv("../data/volunteers.csv")
 volunteers <- volunteers %>% mutate(id = 1:nrow(volunteers)) %>% select(id, everything())
 
 df_tutors <- read.csv("../data/tutor_vols.csv") 
-df_tutors <- df_tutors %>% mutate(id = 1:nrow(df_tutors)) 
+df_tutors <- df_tutors %>% mutate(id = 1:nrow(df_tutors), num_tutees = 0) 
 
 #Data students submitted via google forms
 students <- read.csv("../data/students.csv")
