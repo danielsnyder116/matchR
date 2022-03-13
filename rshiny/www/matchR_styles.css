@@ -65,9 +65,7 @@
 
 /*Css for all buttons*/
 .standard-btn {
-  color:red;
-  padding-top:10px;
-  
+  border-radius: 5px;
 }
 
 

@@ -27,6 +27,7 @@ viewProfileServer <- function(id, session_input) {
     #Qualified/Unique ids for tables
     profile_table_name <<- glue("profile_{rv$id}")
     rec_matches_table_name <<- glue("rec_matches_{rv$id}")
+    notes_table_name <<- glue("notes_{rv$id}")
     
     
     #VP REACTIVE VALUES - for storing info related to student/volunteer dynamically
@@ -39,9 +40,12 @@ viewProfileServer <- function(id, session_input) {
     
     #BRINGING IN ALL THE DATA
     tables[[profile_table_name]] <<- get_profile() %>% mutate(across(everything(), ~as.character(.))) %>% 
-                                                      pivot_longer(!id, names_to ="field") %>% select(-id)
+                                                       pivot_longer(!id, names_to ="field") %>% select(-id)
                                                       
     tables[[rec_matches_table_name]] <<- get_rec_matches()
+    
+    
+    tables[[notes_table_name]] <<- get_notes()
     
   
     
@@ -51,11 +55,14 @@ viewProfileServer <- function(id, session_input) {
     output[[profile_table_name]] <- DT::renderDT({
         DT::datatable(tables[[profile_table_name]][, c("field", "value")],
                   
+                  class = 'cell-border stripe',
                   selection = 'single',
+                  filter = "top",
+                  
                   rownames = FALSE,
                   #colnames =,
                   options = list(
-                    
+                    columnDefs = list(list(className = 'dt-center', targets = '_all')),
                     dom = "tip"
                   )
         )
@@ -66,16 +73,36 @@ viewProfileServer <- function(id, session_input) {
     output[[rec_matches_table_name]] <- DT::renderDT({
       DT::datatable(tables[[rec_matches_table_name]][, c("id", "first_name", "last_name", 
                                                          "email_address", "agg_weight", "ranking")],
+                    
+                    class = 'cell-border stripe',
                     selection = 'single',
+                    filter = "top",
+                    
                     rownames = FALSE,
                     colnames = c("ID", "First Name", "Last Name", "Email", "Score", "Best Fit Ranking"),
                     options = list(
-                      
+                      columnDefs = list(list(className = 'dt-center', targets = '_all')),
                       dom = "tip"
                     )
       )
     })
     
+    
+    #NOTES
+    output[[notes_table_name]] <- DT::renderDT({
+      DT::datatable(tables[[notes_table_name]][, c("note_category", "note_contents", "note_owner", "note_date")],
+                    
+                    class = 'cell-border stripe',
+                    selection = 'single',
+                    
+                    rownames = FALSE,
+                    colnames = c("Category", "Content", "Made By", "Date Made"),
+                    options = list(
+                      columnDefs = list(list(className = 'dt-center', targets = '_all')),
+                      dom = "tip"
+                    )
+      )
+    })
     
     
     

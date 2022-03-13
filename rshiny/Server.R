@@ -9,14 +9,9 @@ server <- function(id, input, output) {
   #REACTIVE VALUES
   #------------------------------------------
   # #List of active tabs in unmatched section
-  active_tabs <- c()
-  
-  #Any Reactive Values Needed
-  USER <- reactiveVal()
-  
-  #Instantiate reactive values to maintain active individual 
-  rv <<- reactiveValues(id = "", name = "", role = "", status = "")
-  
+  active_tabs <<- c()
+  USER <<- reactiveVal()
+  rv <<- reactiveValues(id = "", name = "", role = "", status = "") #Instantiate reactive values to maintain active individual 
   match_trigger <<- reactiveVal(0) #reactive value used to trigger updates to data when match/unmatch made
   
   
@@ -63,13 +58,19 @@ server <- function(id, input, output) {
   
   STUD_FORM_TABLE <<- "students"
   #STUD_HIST_TABLE <<- "stud_historical"
-  
+  MATCH_TABLE <<- "confirmed_matches"
  
  
   
   
   #Data will be updated when specific changes are recorded
-  
+  # - New match made
+  # - Match unmatched/undone
+  # - New student(s) / volunteer(s) data added
+  # - Student(s) / volunteer(s) status changes (drops out / inactive or 
+      #when student makes payment and is eligible to be matched or 
+      #when new volunteer has had call/interview with Yaritza/Kendall and is "cleared"
+  # - When student/volunteer slots are all filled (student has all tutors and volunteer has all tutees)
   
   db_data <- eventReactive(match_trigger(), {
               
@@ -77,12 +78,15 @@ server <- function(id, input, output) {
     
               #Loading data and saving in list to access later
               #Want to ensure that all data updates at the same time
-              db_data <- list( VOL_FORM = reactive({  load_data(VOL_FORM_TABLE) }),
-                               VOL_TUTOR = reactive({  load_data(VOL_TUTOR_TABLE) }),
-                               
+              db_data <- list( VOL_FORM = reactive({ load_data(VOL_FORM_TABLE) }),
+                               VOL_TUTOR = reactive({ load_data(VOL_TUTOR_TABLE) }),
                                #VOL_HIST = reactive({ load_data(VOL_HIST_TABLE) }),
-                               STUD_FORM = reactive({ load_data(STUD_FORM_TABLE) })#,
+                               
+                               STUD_FORM = reactive({ load_data(STUD_FORM_TABLE) }),
+                               #STUD_TUTEE = reactive({ load_data(STUD_TUTEE_TABLE) })#,
                                #STUD_HIST = reactive({ load_data(STUD_HIST_TABLE) })
+                               
+                               MATCHES = reactive({ load_data(MATCH_TABLE) })
                              )
   })
   
@@ -106,29 +110,53 @@ server <- function(id, input, output) {
   #Inputs & Calculated Reactives
   #-----------------------------
   vol_hist <- reactive({ db_data()$VOL_HIST() })
-  kpi_total_vol <- reactive({  kpi_total_vol <- "100" })
+  kpi_current_sem_total_vol <- reactive({  kpi_total_vol <- "100" })
   
   
   
   #Outputs
   #------------------
-  output$vol_hist_table <- renderDT({
-    datatable(vol_hist(), #[, c("category", "day", "name", "email", "phone", "new_volunteer","semester",
-                               #"year", "tutor_type", "class", "time", "club_name", "nickname")],
-              #editable = list(target = "row"),
-              rownames = FALSE,
-              #colnames = c(),
-              options = list()
-    )
-  })  # %>% formatStyle()
-
-  #Total Number Volunteers
+  
+  #Total Number of Volunteers for CURRENT SEMESTER
   output$total_vol_box <- renderValueBox({
-    valueBox(kpi_total_vol(), subtitle = "Total Volunteers", color = "green")
+    valueBox(kpi_current_sem_total_vol(), subtitle = "Total Volunteers (Current Semester)", color = "green", icon = icon("users"))
   })
   
   #Compared to last semester
   #Compared to last year
+  
+  #Pulled from matching section, just made outputId unique
+  output$over_num_unmatched_studs <- renderValueBox({ 
+    valueBox(value = num_unmatched_studs(), subtitle = "Students to Match", 
+             color = "red", icon = icon("user-times"))  
+  })
+  
+  #Pulled from matching section, just made outputId unique
+  output$over_num_unmatched_vols <- renderValueBox({ 
+    valueBox(num_unmatched_vols(), subtitle = "Volunteers to Match", 
+             color = "red", icon = icon("user-times"))
+  })
+  
+  
+  
+  output$vol_hist_table <- renderDT({
+    datatable(vol_hist(), #[, c("category", "day", "name", "email", "phone", "new_volunteer","semester",
+                               #"year", "tutor_type", "class", "time", "club_name", "nickname")],
+              
+              #editable = list(target = "row"),
+              class = 'cell-border stripe',
+              selection = "single", 
+              filter = "top",
+              
+              rownames = FALSE,
+              #colnames = c(),
+              options = list(
+                
+              )
+    )
+  })  # %>% formatStyle()
+
+ 
   
   
   
@@ -138,6 +166,15 @@ server <- function(id, input, output) {
   
   unm_volunteers <- reactive({ db_data()$VOL_TUTOR() %>% filter(status == "Unmatched") })
   
+  num_unmatched_vols <- reactive ({ nrow(unm_volunteers()) })
+
+  output$num_unmatched_vols <- renderValueBox({ 
+    valueBox(num_unmatched_vols(), subtitle = "Volunteers to Match", 
+             color = "red", icon = icon("user-times"))
+  })
+  
+
+  
   #TODO: Identify key cols to show in unmatched table
   #Number of days since signed up
   #New or returning volunteer
@@ -145,7 +182,10 @@ server <- function(id, input, output) {
     DT::datatable(unm_volunteers()[, c('first_name', 'last_name', 'gender','timestamp','returning_indicator')],
               
               #editable = list(target = "row"),
+              class = 'cell-border stripe', 
+              filter = "top",
               selection =  'single',
+              
               rownames = FALSE,
               
               # colnames = c( 'First Name', 'Last Name', 'Email', 'Gender', 'Native Language(s)',
@@ -177,6 +217,7 @@ server <- function(id, input, output) {
               #               'Available Before Specific Date? 2', 'Other Tutoring Schedule Info 2' ),
               options = list(
                 
+                columnDefs = list(list(className = 'dt-center', targets = '_all')),
                 dom = "tip"
               )
     )
@@ -191,6 +232,13 @@ server <- function(id, input, output) {
     
   unm_students <- reactive({ db_data()$STUD_FORM() %>% filter(status == "Unmatched") })
   
+  num_unmatched_studs <- reactive({ nrow(unm_students()) })
+
+  output$num_unmatched_studs <- renderValueBox({ 
+    valueBox(value = num_unmatched_studs(), subtitle = "Students to Match", 
+             color = "red", icon = icon("user-times"))  
+  })
+  
   #stud_hist <- reactive({ db_data()$STUD_HIST })
   
   #Outputs
@@ -198,7 +246,10 @@ server <- function(id, input, output) {
   output$unmatched_stud_table <- DT::renderDT({
     DT::datatable(unm_students()[, c('first_name', 'last_name', 'gender', 'native_lang', 'timestamp')],
               
+              class = 'cell-border stripe',
               #editable = list(target = "row"),
+              filter = "top",
+              
               rownames = FALSE,
               # colnames = c( "ID", "Timestamp", "Email","Tutoring Selection","English Level",
               #              "Last Name","First Name","Phone Number","Address","City / State / Zip",
@@ -212,11 +263,24 @@ server <- function(id, input, output) {
               # 
               selection = 'single',
               options = list(
-                
+                columnDefs = list(list(className = 'dt-center', targets = '_all')),
                 dom = "tip"
               )
     )
   })  # %>% formatStyle()
+  
+  
+  
+  
+  
+  
+  #-----------------------------------------------------------------------------------------
+  #  MATCHES (CONFIRMED)
+  #------------------
+  
+  
+  
+  
   
   
   

@@ -34,6 +34,16 @@ df_tutors <- df_tutors %>% mutate(id = 1:nrow(df_tutors), num_tutees = 0)
 students <- read.csv("../data/students.csv")
 students <- students %>% mutate(id = 1:nrow(students)) %>% select(id, everything())
 
+
+#Empty dataframe for notes
+df_notes <- tibble(id = character(),
+                   role = character(),
+                   note_category = character(), 
+                   note_contents = character(),
+                   note_owner = character(),
+                   note_date = character()
+            )
+
 #Add tables
 update_table(DB_PATH, "user", df_users, overwrite = TRUE)
 update_table(DB_PATH, "students", students, overwrite = TRUE)
@@ -42,6 +52,8 @@ update_table(DB_PATH, "vols_historical", df_historical_vols, overwrite = TRUE)
 update_table(DB_PATH, "volunteers", volunteers, overwrite = TRUE)
 
 update_table(DB_PATH, "vol_tutors", df_tutors, overwrite = TRUE)
+
+update_table(DB_PATH, "notes", df_notes, overwrite = TRUE)
 
 
 

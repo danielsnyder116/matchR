@@ -23,12 +23,29 @@ get_rec_matches <- function() {
   
   #Filter to rows associated with volunter id and then show students (using their id)
   if (rv$role == "Volunteer") {
-    data <- load_data("rec_matches") %>% filter(vol_id == rv$id) %>% rename(id = student_id)
+    data <- load_data("rec_matches") %>% filter(vol_id == rv$id) %>% rename(id = student_id) #%>% select(id, st)
   }
   
   #Filter to rows associated with student id and then show volunteers (using their id)
   else {
     data <- load_data("rec_matches") %>% filter(student_id == rv$id) %>% rename(id = vol_id)
+  }
+  
+  return(data)
+}
+
+
+get_notes <- function(){
+  print("VP-F-03: Getting notes on viewed individual")
+  
+  #Filter to rows associated with volunter id and then show students (using their id)
+  if (rv$role == "Volunteer") {
+    data <- load_data("notes") %>% filter(id == rv$id) 
+  }
+  
+  #Filter to rows associated with student id and then show volunteers (using their id)
+  else {
+    data <- load_data("notes") %>% filter(id == rv$id)
   }
   
   return(data)

@@ -11,55 +11,84 @@ viewProfileUI <- function(id) {
            value = ns(glue("{rv$id}_tab")),
            
            div(class = 'standard-btn', actionButton(inputId = ns(glue("close_tab_button_{rv$id}")), 
-                                                    label = "x", style="color:white;background-color:red; font-weight:bold;"), 
+                                                    label = "x", style="color:white;background-color:#ff3333; font-weight:bold;"), 
                     style="padding-left:920px;"), 
            
            
            tabsetPanel(id=ns(glue("details_{rv$id}")),
                        
+                       #PROFILE
+                       tabPanel(title = "Profile",
+                                value = ns("profile_tab"),
+                                
+                                br(),
+                                
+                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_update_profile_{notes_table_name}')),
+                                                      label = "Update Info", icon=icon("user-edit", style="padding-right: 4px;"))),
+                                
+                                br(),
+                                
+                                div(DT::dataTableOutput(outputId = ns(profile_table_name)), style="white-space:nowrap; padding:0px 20px 20px 20px;")
+                       ),
+                       
+                       
+                       #RECOMMENDED MATCHES
                        tabPanel(title = "Recommended Matches",
                                 value = ns("match_recs_tab"),
                               br(), 
 
                               column(5,
                                      
-                                disabled(actionButton(inputId = ns(glue("initial_match_{rec_matches_table_name}")), 
+                                disabled(actionButton(class='standard-btn', inputId = ns(glue("initial_match_{rec_matches_table_name}")), 
                                                   label = "Match", icon = icon("people-arrows"))), #icon("exchange-alt")
+                                
+                                actionButton(class='standard-btn', inputId = ns(glue("initial_rerun_algo_{rec_matches_table_name}")),
+                                                      label = "Rerun Algorithm", icon = icon("redo", style='padding-right: 4px;')),
+                                
                                 br(), br(),
                                      
-                                DT::dataTableOutput(ns(rec_matches_table_name))
+                                div(DT::dataTableOutput(ns(rec_matches_table_name)), style="white-space:nowrap; padding:0px 20px 20px 20px;")
                               ),
                               
-                             
-                            
-                              
-                                
-                                
                        ),
                        
+                   
+                       #NOTES
+                       tabPanel(title = "Notes",
+                                value = ns("notes_tab"),
+                                
+                                br(),
+                                
+                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_add_note_{notes_table_name}')),
+                                             label = "Add", icon=icon("plus", style="padding-right: 4px;"))),
+                                
+                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_edit_note_{notes_table_name}')),
+                                             label = "Edit", icon=icon("edit", style="padding-right: 4px;"))),
+                                
+                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_delete_note_{notes_table_name}')),
+                                             label = "Delete", icon=icon("trash-alt", style="padding-right: 4px;"))),
+                                
+                                
+                                br(), br(),
+                                
+                                div(DT::dataTableOutput(outputId = ns(notes_table_name)), style="white-space:nowrap; padding:0px 20px 20px 20px;")
+       
+                       ),
+                       
+                       #CURRENT SEMESTER
                        tabPanel(title = "Current Semester",
                                 value = ns("current_semester_tab"),
                                 
-                                
-                                
-                                
                        ),
                        
+                       #PREVIOUS SEMESTER
                        tabPanel(title = "Previous Semester",
                                 value = ns("previous_semester_tab")
                                 
-                                
-                                
                        ),
                        
-                       tabPanel(title = "Profile",
-                                value = ns("profile_tab"),
-
-                                br(),
-                                
-                                DT::dataTableOutput(outputId = ns(profile_table_name))
-                       ),
-                       
+                      
+                       #ALL HISTORY
                        tabPanel(title = "All History",
                                 value = ns("history_tab")
                        ),
