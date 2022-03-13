@@ -17,7 +17,7 @@ observeEvent(input$unmatched_vols_table_rows_selected, ignoreInit = TRUE, {
   #Provides the row index of the row selected/clicked
   row <- input$unmatched_vols_table_rows_selected
   
-  update_reactive_values(values, unm_volunteers(), row)
+  update_reactive_values(rv, unm_volunteers(), row)
   
   enable(id = "view_vol_button")
   enable(id = "initial_match_vol_button")
@@ -36,16 +36,16 @@ observeEvent(input$view_vol_button, ignoreInit = TRUE, {
   disable(id="initial_match_vol_button")
   
   #Prepare inputs for viewProfile module
-  indiv_info <<- make_profile_tab_info(values$id, values$name, values$role)
+  indiv_info <<- make_profile_tab_info(rv$id, rv$name, rv$role)
   default_session <- getDefaultReactiveDomain()
   
   #Launch module
-  viewProfileServer(id='view_vol', values, default_session, "Volunteer")
+  viewProfileServer(id='view_vol', rv, default_session, "Volunteer")
   
   #PREVENT DUPLICATE TABS
   #If tab already open, view that tab with error
   #Otherwise insert/create new tab
-  if ( glue("{values$name}_tab") %in% active_tabs ) {
+  if ( glue("{rv$name}_tab") %in% active_tabs ) {
     
     showFeedbackWarning(inputId = "duplicate_tab",
                         text = "Tab is already open")
@@ -56,14 +56,14 @@ observeEvent(input$view_vol_button, ignoreInit = TRUE, {
     hideFeedback(inputId = "duplicate_tab")
     
     #Adding new tab (see module for UI structure)
-    insertTab(inputId = "setpanel_matching", viewProfileUI(id="view_vol", values)) 
+    insertTab(inputId = "setpanel_matching", viewProfileUI(id="view_vol", rv)) 
     
     #Bring new tab into focus
-    updateTabsetPanel(inputId = "setpanel_matching", selected = glue("view_vol-{values$id}_tab"))
+    updateTabsetPanel(inputId = "setpanel_matching", selected = glue("view_vol-{rv$id}_tab"))
   
     print(glue("Active tabs: {active_tabs}"))
     
-    #active_tabs <- append(active_tabs, glue("{values$id}_tab"))
+    #active_tabs <- append(active_tabs, glue("{rv$id}_tab"))
     #print(active_tabs)
 
   }
@@ -78,7 +78,7 @@ observeEvent(input$unmatched_stud_table_rows_selected, ignoreInit = TRUE, {
   #Provides the row index of the row selected/clicked
   row <- input$unmatched_stud_table_rows_selected
   
-  update_reactive_values(values, unm_students(), row)
+  update_reactive_values(rv, unm_students(), row)
   
   enable(id = "view_stud_button")
   enable(id = "initial_match_stud_button")
@@ -93,16 +93,16 @@ observeEvent(input$view_stud_button, ignoreInit = TRUE, {
   disable(id="initial_match_stud_button")
   
   #Prepare inputs for viewProfile module
-  indiv_info <<- make_profile_tab_info(values$id, values$name, values$role)
+  indiv_info <<- make_profile_tab_info(rv$id, rv$name, rv$role)
   default_session <- getDefaultReactiveDomain()
   
   #Launch module
-  viewProfileServer(id='view_stud', values, default_session, "Student")
+  viewProfileServer(id='view_stud', default_session, "Student")
   
   #PREVENT DUPLICATE TABS
   #If tab already open, view that tab with error
   #Otherwise insert/create new tab
-  if ( glue("{values$name}_tab") %in% active_tabs ) {
+  if ( glue("{rv$name}_tab") %in% active_tabs ) {
     
     showFeedbackWarning(inputId = "duplicate_tab",
                         text = "Tab is already open")
@@ -113,14 +113,14 @@ observeEvent(input$view_stud_button, ignoreInit = TRUE, {
     hideFeedback(inputId = "duplicate_tab")
     
     #Adding new tab (see module for UI structure)
-    insertTab(inputId = "setpanel_matching", viewProfileUI(id="view_stud", values)) 
+    insertTab(inputId = "setpanel_matching", viewProfileUI(id="view_stud", rv)) 
     
     #Bring new tab into focus
-    updateTabsetPanel(inputId = "setpanel_matching", selected = glue("view_stud-{values$id}_tab"))
+    updateTabsetPanel(inputId = "setpanel_matching", selected = glue("view_stud-{rv$id}_tab"))
     
     print(glue("Active tabs: {active_tabs}"))
     
-    #active_tabs <- append(active_tabs, glue("{values$id}_tab"))
+    #active_tabs <- append(active_tabs, glue("{rv$id}_tab"))
     #print(active_tabs)
     
   }

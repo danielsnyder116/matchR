@@ -15,7 +15,7 @@ server <- function(id, input, output) {
   USER <- reactiveVal()
   
   #Instantiate reactive values to maintain active individual 
-  values <- reactiveValues(id = "", name = "", role = "", status = "")
+  rv <- reactiveValues(id = "", name = "", role = "", status = "")
   
   match_trigger <- reactiveVal(0) #reactive value used to trigger updates to data when match/unmatch made
   
