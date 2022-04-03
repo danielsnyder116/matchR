@@ -57,7 +57,7 @@ make_profile_tab_info <- function(id_input, name_input, role_input) {
 
   tab_info <-  div(HTML(paste0("<b>ID:</b> ", id_input, "<br>",
                                "<b>Name:</b> ", name_input, "<br>",
-                               "<b>Role:</b> ", role_input, "<br>")), style ='font-size: 12px;')
+                               "<b>Role:</b> ", role_input, "<br>")), style ='font-size: 11px;')
   
   return (tab_info)
 

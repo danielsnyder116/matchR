@@ -22,8 +22,8 @@ server <- function(id, input, output) {
       textInput(inputId = "user_name", label = "User Name"),
       textInput(inputId = "user_password", label = "Password"),
 
-      actionButton(inputId = "login_button", label = "Login"),
-      actionButton(inputId = "cancel_login_button", label = "Cancel")
+      actionButton(class="standard-btn", inputId = "login_button", label = "Login"),
+      actionButton(class="standard-btn", inputId = "cancel_login_button", label = "Cancel")
     )
   )
 
@@ -91,11 +91,17 @@ server <- function(id, input, output) {
   })
   
   
-  unmatched_vol_list <<- reactive({ db_data()$VOL_FORM() %>% 
-                                          filter(status == "Unmatched") %>% select(id, first_name, last_name) })
+  unmatched_vol_names <<- reactive({ db_data()$VOL_FORM() %>% 
+                                          filter(status == "Unmatched") %>% 
+                                          mutate(full_name = paste(first_name, last_name)) %>% 
+                                          select(full_name) %>% arrange()
+  })
   
-  unmatched_stud_list <<- reactive({ db_data()$STUD_FORM() %>% 
-                                          filter(status == "Unmatched") %>% select(id, first_name, last_name) })
+  unmatched_stud_names <<- reactive({ db_data()$STUD_FORM() %>% 
+                                          filter(status == "Unmatched") %>% 
+                                          mutate(full_name = paste(first_name, last_name)) %>% 
+                                          select(full_name) %>% arrange()
+  })
 
   
 
@@ -217,7 +223,7 @@ server <- function(id, input, output) {
               #               'Available Before Specific Date? 2', 'Other Tutoring Schedule Info 2' ),
               options = list(
                 
-                columnDefs = list(list(className = 'dt-center', targets = '_all')),
+                columnDefs = list(list(className = 'dt-left', targets = '_all')),
                 dom = "tip"
               )
     )
@@ -263,7 +269,7 @@ server <- function(id, input, output) {
               # 
               selection = 'single',
               options = list(
-                columnDefs = list(list(className = 'dt-center', targets = '_all')),
+                columnDefs = list(list(className = 'dt-left', targets = '_all')),
                 dom = "tip"
               )
     )

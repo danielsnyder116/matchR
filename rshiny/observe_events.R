@@ -20,7 +20,7 @@ observeEvent(input$unmatched_vols_table_rows_selected, ignoreInit = TRUE, {
   update_reactive_values(unm_volunteers(), row)
   
   enable(id = "view_vol_button")
-  enable(id = "initial_match_vol_button")
+  enable(id = "initial_manual_match_vol_button")
 })
 
 
@@ -81,7 +81,7 @@ observeEvent(input$unmatched_stud_table_rows_selected, ignoreInit = TRUE, {
   update_reactive_values(unm_students(), row)
   
   enable(id = "view_stud_button")
-  enable(id = "initial_match_stud_button")
+  enable(id = "initial_manual_match_stud_button")
 })
 
 
@@ -151,26 +151,25 @@ observeEvent(input$view_stud_button, ignoreInit = TRUE, {
 
 
 #START VOL MANUAL MATCH
-observeEvent(input$initial_match_vol_button, {
-  print("OE: Initial match vol button clicked")
+observeEvent(input$initial_manual_match_vol_button, {
+  print("OE: Initial manual match vol button clicked")
   
   showModal(
     modalDialog(title = "Manual Match", footer = NULL,
     
-      textInput(inputId = "select_student", 
-                value=unmatched_stud_list(),
-                label = "Select a student to pair with the volunteer"),
+      pickerInput(inputId = "select_student", label = "Select a student to pair with the volunteer",
+                  choices = unmatched_stud_names(), multiple = FALSE),  
       
-      actionButton(inputId = "secondary_match_vol_button", label = "Match"),
-      actionButton(inputId = "cancel_match_vol_button", label = "Cancel")
+      actionButton(inputId = "secondary_manual_match_vol_button", label = "Match"),
+      actionButton(inputId = "cancel_manual_match_vol_button", label = "Cancel")
     )
   )
   
 })
 
 #CANCEL VOL MANUAL MATCH
-observeEvent(input$cancel_match_vol_button, {
-  print("OE: Clicked on cancel match volunteer button")
+observeEvent(input$cancel_manual_match_vol_button, {
+  print("OE: Clicked on cancel manual match volunteer button")
   
   removeModal()
 })
@@ -179,25 +178,24 @@ observeEvent(input$cancel_match_vol_button, {
 
 
 #START STUD MANUAL MATCH
-observeEvent(input$initial_match_stud_button, {
+observeEvent(input$initial_manual_match_stud_button, {
   print("OE: Initial match stud button clicked")
   
   showModal(
     modalDialog(title = "Manual Match", footer = NULL,
-                
-      textInput(inputId = "select_vol", 
-                value=unmatched_vol_list(),
-                label = "Select a volunteer to pair with the student"),
-
-      actionButton(inputId = "secondary_match_stud_button", label = "Match"),
-      actionButton(inputId = "cancel_match_stud_button", label = "Cancel")
+       
+      pickerInput(inputId = "select_vol", label = "Select a volunteer to pair with the student",
+                  choices = unmatched_vol_names(), multiple = FALSE),  
+           
+      actionButton(inputId = "secondary_manual_match_stud_button", label = "Match"),
+      actionButton(inputId = "cancel_manual_match_stud_button", label = "Cancel")
     )
   )
 })
 
 #CANCEL STUD MANUAL MATCH
-observeEvent(input$cancel_match_stud_button, {
-  print("OE: Clicked on cancel match student button")
+observeEvent(input$cancel_manual_match_stud_button, {
+  print("OE: Clicked on cancel manual match student button")
   
   removeModal()
 })

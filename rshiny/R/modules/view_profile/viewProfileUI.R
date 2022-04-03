@@ -10,9 +10,10 @@ viewProfileUI <- function(id) {
   tabPanel(title = indiv_info,
            value = ns(glue("{rv$id}_tab")),
            
-           div(class = 'standard-btn', actionButton(inputId = ns(glue("close_tab_button_{rv$id}")), 
-                                                    label = "x", style="color:white;background-color:#ff3333; font-weight:bold;"), 
-                    style="padding-left:920px;"), 
+           
+           div(actionButton(inputId = ns(glue("close_tab_button_{rv$id}")),
+                                                    label = "X", style="color:white;background-color:#d95755; font-weight:bold;"), 
+                    style="padding-left:1300px; padding-top:8px;"), 
            
            
            tabsetPanel(id=ns(glue("details_{rv$id}")),
@@ -20,16 +21,29 @@ viewProfileUI <- function(id) {
                        #PROFILE
                        tabPanel(title = "Profile",
                                 value = ns("profile_tab"),
+                                br(),
+                                
+                                fluidRow(
+                                  column(12,
+                                         disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_update_profile_{notes_table_name}')),
+                                                               label = "Update Info", icon=icon("user-edit", style="padding-right: 4px;"))),
+                                         br(),
+                                         div(DT::dataTableOutput(outputId = ns(contact_table_name)), style="white-space:nowrap;")
+                                  )
+                                ),
                                 
                                 br(),
                                 
-                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_update_profile_{notes_table_name}')),
-                                                      label = "Update Info", icon=icon("user-edit", style="padding-right: 4px;"))),
-                                
-                                br(),
-                                
-                                div(DT::dataTableOutput(outputId = ns(profile_table_name)), style="white-space:nowrap; padding:0px 20px 20px 20px;")
-                       ),
+                                fluidRow(
+                                  column(6,
+                                     div(DT::dataTableOutput(outputId = ns(dem_table_name)), style="white-space:nowrap;")
+                                  ),
+                               
+                                  column(6,
+                                         div(DT::dataTableOutput(outputId = ns(details_table_name)), style="white-space:nowrap;")
+                                  )
+                               ) #fluidRow
+                       ), #tabPanel
                        
                        
                        #RECOMMENDED MATCHES
@@ -37,17 +51,21 @@ viewProfileUI <- function(id) {
                                 value = ns("match_recs_tab"),
                               br(), 
 
-                              column(5,
+                              
                                      
                                 disabled(actionButton(class='standard-btn', inputId = ns(glue("initial_match_{rec_matches_table_name}")), 
                                                   label = "Match", icon = icon("people-arrows"))), #icon("exchange-alt")
                                 
                                 actionButton(class='standard-btn', inputId = ns(glue("initial_rerun_algo_{rec_matches_table_name}")),
                                                       label = "Rerun Algorithm", icon = icon("redo", style='padding-right: 4px;')),
+                              
+                                h5("Click on a row to enable button and confirm new match."),
                                 
-                                br(), br(),
+                                br(),
+                              
+                              column(5,
                                      
-                                div(DT::dataTableOutput(ns(rec_matches_table_name)), style="white-space:nowrap; padding:0px 20px 20px 20px;")
+                                div(DT::dataTableOutput(ns(rec_matches_table_name)), style="white-space:nowrap;")
                               ),
                               
                        ),
@@ -56,7 +74,6 @@ viewProfileUI <- function(id) {
                        #NOTES
                        tabPanel(title = "Notes",
                                 value = ns("notes_tab"),
-                                
                                 br(),
                                 
                                 disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_add_note_{notes_table_name}')),
@@ -67,9 +84,7 @@ viewProfileUI <- function(id) {
                                 
                                 disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_delete_note_{notes_table_name}')),
                                              label = "Delete", icon=icon("trash-alt", style="padding-right: 4px;"))),
-                                
-                                
-                                br(), br(),
+                                br(), 
                                 
                                 div(DT::dataTableOutput(outputId = ns(notes_table_name)), style="white-space:nowrap; padding:0px 20px 20px 20px;")
        

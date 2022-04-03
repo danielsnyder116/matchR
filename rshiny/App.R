@@ -21,8 +21,10 @@ load_package <- function(package) {
 
 packages <- c("shiny", "shinyjs", "shinydashboard", "shinyFeedback",
               "shinycssloaders", "DT", "dplyr", "readr", "lubridate",
-              "stringr", "RSQLite", "dtplyr", "glue", "rsconnect", "shinyauthr")
+              "stringr", "RSQLite", "dtplyr", "glue", "shinyWidgets",
+              "dashboardthemes")
 
+#"rsconnect", "shinyauthr"
 sapply(packages, load_package)
 
 # #SETUP FOR SHINYAPPS.IO

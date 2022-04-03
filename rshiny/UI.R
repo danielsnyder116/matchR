@@ -4,12 +4,12 @@
 
 
 header <- dashboardHeader(
-  
+
             #Sidebar title
             #title = "Mt. WEC",
             #icon('mountain'),
           
-            title = "WEC",
+            title = "matchR",
             
             # div(tags$img(src = "wec_title_wide.png"), style = 'background-color: white;
             #            padding: 0px 0px 10px 0px; margin: 0px;'), 
@@ -18,7 +18,7 @@ header <- dashboardHeader(
            
             #CUSTOM HEADER TITLE
             #There is no non-hacky way of doing this - have to tweak dropdown menu html
-            tags$li(class = "dropdown", div(id='center-title', icon('people-arrows', style='padding-right: 4px;'), 'MatchR')),
+            tags$li(class = "dropdown", div(id='center-title', icon('people-arrows', style='padding-right: 4px; font-size:28px;'), 'matchR')),
 
             dropdownMenuCustom(type = "messages", icon = icon('user'), badgeStatus = NULL),
             dropdownMenuCustom(type = "notifications", icon = icon('cog'), badgeStatus = NULL)
@@ -37,6 +37,9 @@ sidebar <- dashboardSidebar(width = "170px",
   
 
 body <- dashboardBody(
+  
+  #custom theme
+  default_theme,
   
   #Calls to enable shinyjs and shinyFeedback functionality
   useShinyjs(),
@@ -58,7 +61,7 @@ body <- dashboardBody(
     #HOME
     tabItem(
       tabName = 'sidebar_home',
-      h4("Welcome to WEC's MatchR"),
+      h4("Welcome to matchR"),
       br(),
       
       tabsetPanel(id = 'setpanel_home',
@@ -74,7 +77,9 @@ body <- dashboardBody(
             valueBoxOutput(outputId = "over_num_unmatched_vols", width = 2) %>% withSpinner(),
             #valueBoxOutput(outputId = "over_num_matched_vols", width = 2) %>% withSpinner(),
             #valueBoxOutput(outputId = "over_total_matches", width = 2) %>% withSpinner()
-          )
+          ),
+          
+          br(), br(), br()
           
          #br()
           
@@ -103,11 +108,15 @@ body <- dashboardBody(
     #----------
     tabItem(
       tabName = 'sidebar_matching',
-      h4("Matching"),
-      
+      h4(span("Matching", style="padding-right:1150px"),  actionButton(inputId = "overall_refresh_button", label = "Refresh",
+                                       icon = icon("sync-alt", style='padding-right:4px;')), 
+                         
+         style='display:block;'
+      ),
+
       tabsetPanel(id = 'setpanel_matching',
-        
-        
+                  
+       
         #UNMATCHED STUDENTS
         tabPanel(
           title = 'Unmatched Students',
@@ -115,18 +124,23 @@ body <- dashboardBody(
           br(),
           
           fluidRow(
-            valueBoxOutput(outputId = "num_unmatched_studs", width = 2) %>% withSpinner()
+                   valueBoxOutput(outputId = "num_unmatched_studs", width = 2) %>% withSpinner()
+           
           ),
           
           fluidRow(
-            disabled(actionButton(class = 'standard-btn', inputId = "view_stud_button", label = "View Profile", icon=icon("folder-open", style='padding-right: 4px;'))),
-            disabled(actionButton(class = 'standard-btn', inputId = "initial_manual_match_stud_button", label = "Manual Match", 
-                                  icon = icon("exchange-alt", style='padding-right: 4px;')))
-          ),
+            column(4, 
+                    disabled(actionButton(class = 'standard-btn', inputId = "view_stud_button", label = "View Profile", icon=icon("folder-open", style='padding-right: 4px;'))),
+                    disabled(actionButton(class = 'standard-btn', inputId = "initial_manual_match_stud_button", label = "Manual Match", 
+                                          icon = icon("exchange-alt", style='padding-right: 4px;'))),
+                   
+                  h5("Select a student row to enable buttons for further action.")
+            ) #column
+          ), #fluidRow
 
           br(), 
           
-          div(DT::dataTableOutput(outputId = "unmatched_stud_table"), style="overflow-x:scroll; white-space:nowrap; padding:0px 20px 20px 20px;"), 
+          div(DT::dataTableOutput(outputId = "unmatched_stud_table"), style="overflow-x:scroll; white-space:nowrap;"), 
         ),
         
         #UNMATCHED VOLUNTEERS
@@ -140,14 +154,18 @@ body <- dashboardBody(
           ),
           
           fluidRow(
-            disabled(actionButton(class = 'standard-btn', inputId = "view_vol_button", label = "View Profile", icon=icon("folder-open", style='padding-right: 4px;'))),
-            disabled(actionButton(class = 'standard-btn', inputId = "initial_manual_match_vol_button", label = "Manual Match", 
-                                  icon = icon("exchange-alt", style='padding-right: 4px;')))
+            column(4,
+                   disabled(actionButton(class = 'standard-btn', inputId = "view_vol_button", label = "View Profile", icon=icon("folder-open", style='padding-right: 4px;'))),
+                   disabled(actionButton(class = 'standard-btn', inputId = "initial_manual_match_vol_button", label = "Manual Match", 
+                                         icon = icon("exchange-alt", style='padding-right: 4px;'))),
+                   h5("Select a volunteer row to enable buttons for further action.")
+            )
+           
           ),
 
           br(),
           
-          div(DT::dataTableOutput(outputId = "unmatched_vols_table"), style="overflow-x:scroll;white-space:nowrap; padding:0px 20px 20px 20px;")
+          div(DT::dataTableOutput(outputId = "unmatched_vols_table"), style="overflow-x:scroll;white-space:nowrap;")
         ),
                   
         #OVERVIEW / MATCHES
@@ -156,23 +174,49 @@ body <- dashboardBody(
           value = 'matches_tab', 
           br(),
           
+          tabsetPanel(id = 'setpanel_match_types',
+                      
+            #RE/CONTINUED MATCHES
+            tabPanel(
+              title = "Re-Matches",
+              value = "rematches_tab",
+              br(),
+              
+              disabled(actionButton(class = 'standard-btn', inputId = "initial_rematch_button", 
+                                    label = "Rematch", icon = icon("people-arrows", style='padding-right:4px;'))),
+              
+              h5("Click on a match row to enable button and confirm match."),
+              
+              br()
+              
+              
+              
+            ),
+            
+            #NEW MATCHES
+            tabPanel(
+              title = "New Matches",
+              value = "new_matches_tab",
+              br(),
+              
+              fluidRow(
+                #valueBoxOutput(outputId = "num_matched_studs", width = 2) %>% withSpinner(),
+                #valueBoxOutput(outputId = "num_matched_vols", width = 2) %>% withSpinner(),
+                #valueBoxOutput(outputId = "total_matches", width = 2) %>% withSpinner()
+              ),
+              
+              disabled(actionButton(class = 'standard-btn', inputId = "initial_unmatch_button", label = "Unmatch",
+                                    icon = icon("unlink", style='padding-right:4px;'))),
+              
+              br(), br(),
+              
+              div(DT::dataTableOutput(outputId = "matches_table"), style="overflow-x:scroll;white-space:nowrap;")
+
+            ),
           
-          fluidRow(
-            #valueBoxOutput(outputId = "num_matched_studs", width = 2) %>% withSpinner(),
-            #valueBoxOutput(outputId = "num_matched_vols", width = 2) %>% withSpinner(),
-            #valueBoxOutput(outputId = "total_matches", width = 2) %>% withSpinner()
-          ),
-          
-          disabled(actionButton(class = 'standard-btn', inputId = "initial_unmatch_button", label = "Unmatch",
-                                icon = icon("unlink", style='padding-right:4px;'))),
-          
-          br(), br(),
-          
-          div(DT::dataTableOutput(outputId = "matches_table"), style="overflow-x:scroll;white-space:nowrap; padding:0px 20px 20px 20px;")
-        ),
-        
-        
-      
+          ), #tabsetPanel
+
+        ) #tabPanel Matches
       ) #tabsetPanel
     ), #tabItem
     

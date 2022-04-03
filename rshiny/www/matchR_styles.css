@@ -10,7 +10,7 @@
 
 /* CSS for custom title */
 #center-title {
-  margin: 10px 400px 5px 0px;
+  margin: 10px 600px 5px 0px;
   font-size: 22px;
   font-weight: bolder;
   color: white;
@@ -32,20 +32,25 @@
 
 /*Color of dashboard header/banner*/
 .skin-blue .main-header .navbar, .skin-blue .main-header .logo {
-  background-color: #74bee9; /* */
+  background-color: #40a7e3; /* #74bee9*/
 }
 
 /*Left section of header */
 .skin-blue .main-header .logo {
-  background-color: #74bee9; /* */
+  background-color: #40a7e3; /*#74bee9 */
   border-right: 1px solid white;
   width: 170px;
+}
+
+/*Hamburger icon color*/
+.main-header .sidebar-toggle:before {
+  color:white;
 }
 
 /*Disable highlight color of left section of header*/
 .skin-blue .main-header .logo:hover,
 .skin-blue .main-header .navbar .sidebar-toggle:hover {
-  background-color: #74bee9;
+  background-color: #40a7e3;
 }
 
 
@@ -53,8 +58,11 @@
 
 /*Color of sidebar highlight border on left*/
 .skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li:hover>a {
-  border-left: 3px solid #74bee9;
+  border-left: 3px solid #40a7e3; /*#74bee9*/
 }
+
+.skin-blue .main-header .navbar .sidebar-toggle {
+  background-color: #40a7e3; /*#74bee9 */}
 
 
 
@@ -66,6 +74,8 @@
 /*Css for all buttons*/
 .standard-btn {
   border-radius: 5px;
+  /*color:black;
+  background-color:white;*/
 }
 
 

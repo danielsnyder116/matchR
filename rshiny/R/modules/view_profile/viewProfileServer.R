@@ -12,20 +12,24 @@ viewProfileServer <- function(id, session_input) {
     NUM_OBSERVERS <- 1
     
     #Bring in all functions needed only for viewProfile
-    source("./R/modules/view_profile/view_profile_functions.R", local=TRUE)
-    
+    source("./R/modules/view_profile/view_profile_data_functions.R", local=TRUE)
+    source("./R/modules/view_profile/view_profile_popup_functions.R", local=TRUE)
    
     # #Need these here to ensure they are updated accordingly after a refresh
     # observeEvent(rv$id, {
     #   print("Change in rv detected")
     #   
     #   #Qualified/Unique ids for tables
-    #   profile_table_name <<- glue("profile_{rv$id}")
+    #   contact_table_name <<- glue("profile_{rv$id}")
     #   rec_matches_table_name <<- glue("rec_matches_{rv$id}")
     # })
    
     #Qualified/Unique ids for tables
-    profile_table_name <<- glue("profile_{rv$id}")
+    contact_table_name <<- glue("contact_{rv$id}")
+    details_table_name <<- glue("details_{rv$id}")
+    dem_table_name <<- glue("dem_{rv$id}")
+    
+    
     rec_matches_table_name <<- glue("rec_matches_{rv$id}")
     notes_table_name <<- glue("notes_{rv$id}")
     
@@ -39,9 +43,13 @@ viewProfileServer <- function(id, session_input) {
    
     
     #BRINGING IN ALL THE DATA
-    tables[[profile_table_name]] <<- get_profile() %>% mutate(across(everything(), ~as.character(.))) %>% 
-                                                       pivot_longer(!id, names_to ="field") %>% select(-id)
-                                                      
+    dataframes <- get_profile()
+    
+    #Unpacking dfs from data and loading into separate tables
+    tables[[contact_table_name]] <<- dataframes[['df_contact']]
+    tables[[dem_table_name]] <<- dataframes[['df_dem']]
+    tables[[details_table_name]] <<- dataframes[['df_detail']]
+                                  
     tables[[rec_matches_table_name]] <<- get_rec_matches()
     
     
@@ -51,22 +59,65 @@ viewProfileServer <- function(id, session_input) {
     
     #output[[glue("")]] <- renderText()
     
-    #PROFILE
-    output[[profile_table_name]] <- DT::renderDT({
-        DT::datatable(tables[[profile_table_name]][, c("field", "value")],
+    #CONTACT INFO
+    output[[contact_table_name]] <- DT::renderDT({
+        DT::datatable(tables[[contact_table_name]], #[, c("field", "value")],
                   
                   class = 'cell-border stripe',
                   selection = 'single',
-                  filter = "top",
                   
                   rownames = FALSE,
                   #colnames =,
                   options = list(
-                    columnDefs = list(list(className = 'dt-center', targets = '_all')),
-                    dom = "tip"
+                    #columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                    dom = ""
                   )
         )
     })
+    
+    
+    #DEMOGRAPHIC INFO
+    output[[dem_table_name]] <- DT::renderDT({
+      DT::datatable(tables[[dem_table_name]], #[, c("field", "value")],
+                    
+                    class = 'cell-border stripe',
+                    selection = 'single',
+                    
+                    rownames = FALSE,
+                    #colnames =,
+                    options = list(
+                      #columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                      dom = "tip"
+                    )
+      )
+    })
+
+    
+    #DETAILS
+    output[[details_table_name]] <- DT::renderDT({
+      DT::datatable(tables[[details_table_name]], #[, c("field", "value")],
+                    
+                    class = 'cell-border stripe',
+                    selection = 'single',
+                    
+                    rownames = FALSE,
+                    #colnames =,
+                    options = list(
+                      #columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                      dom = "tip"
+                    )
+      )
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     #RECOMMENDED MATCHES
@@ -81,7 +132,7 @@ viewProfileServer <- function(id, session_input) {
                     rownames = FALSE,
                     colnames = c("ID", "First Name", "Last Name", "Email", "Score", "Best Fit Ranking"),
                     options = list(
-                      columnDefs = list(list(className = 'dt-center', targets = '_all')),
+                      #columnDefs = list(list(className = 'dt-left', targets = '_all')),
                       dom = "tip"
                     )
       )
@@ -98,7 +149,7 @@ viewProfileServer <- function(id, session_input) {
                     rownames = FALSE,
                     colnames = c("Category", "Content", "Made By", "Date Made"),
                     options = list(
-                      columnDefs = list(list(className = 'dt-center', targets = '_all')),
+                      #columnDefs = list(list(className = 'dt-left', targets = '_all')),
                       dom = "tip"
                     )
       )
@@ -111,11 +162,48 @@ viewProfileServer <- function(id, session_input) {
     #---------------------
     #---------------------
     
+    
+    
+    #REC MATCH ROW CLICKED
     OE[[glue("1_{rv$id}")]] <- observeEvent(input[[glue("{rec_matches_table_name}_rows_selected")]], ignoreInit = TRUE, {
                                   print("VP-OE-01: Recommended match row clicked")
 
                                   enable(id = glue("initial_match_{rec_matches_table_name}"))
       
+    })
+    
+    
+    OE[[glue("2_{rv$id}")]] <- observeEvent(input[[glue("initial_match_{rec_matches_table_name}")]], ignoreInit = TRUE, {
+      print("VP-OE-02: Initial match button clicked")
+      
+      show_match_popup(session)
+      
+    })
+    
+    
+    # #VALIDATE
+    # OE[[glue("3_{rv$id}")]] <- observeEvent(input[[glue("{rec_matches_table_name}_rows_selected")]], ignoreInit = TRUE, {
+    #   print("VP-OE-0: Recommended match row clicked")
+    #   
+    # })
+    
+    
+    
+    #SECONDARY MATCH BUTTON CLICKED
+    OE[[glue("4_{rv$id}")]] <- observeEvent(input[[glue("{rec_matches_table_name}_rows_selected")]], ignoreInit = TRUE, {
+      print("VP-OE-04: Secondary match button clicked")
+      
+      
+      
+    })
+    
+    
+    
+    #CANCEL MATCH BUTTON CLICKED
+    OE[[glue("5_{rv$id}")]] <- observeEvent(input[[glue("cancel_match_{rec_matches_table_name}")]], ignoreInit = TRUE, {
+                                  print("VP-OE-05: Cancel match button clicked")
+                                  
+                                  removeModal()
     })
     
     # test$a <- observeEvent()
