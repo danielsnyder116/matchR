@@ -10,22 +10,22 @@ server <- function(id, input, output) {
   #------------------------------------------
   # #List of active tabs in unmatched section
   active_tabs <<- c()
-  USER <<- reactiveVal()
-  rv <<- reactiveValues(id = "", name = "", role = "", status = "") #Instantiate reactive values to maintain active individual 
+  USER <<- reactiveVal(Sys.info()[['user']])
+  rv <<- reactiveValues(id = "", name = "", role = "", status = "", match_ids = "") #Instantiate reactive values to maintain active individual 
   match_trigger <<- reactiveVal(0) #reactive value used to trigger updates to data when match/unmatch made
   
   
-  #Initial Popup for LOGIN
-  showModal(
-    modalDialog(title = "Login!", footer = NULL,
-
-      textInput(inputId = "user_name", label = "User Name"),
-      textInput(inputId = "user_password", label = "Password"),
-
-      actionButton(class="standard-btn", inputId = "login_button", label = "Login"),
-      actionButton(class="standard-btn", inputId = "cancel_login_button", label = "Cancel")
-    )
-  )
+  # #Initial Popup for LOGIN
+  # showModal(
+  #   modalDialog(title = "Login!", footer = NULL,
+  # 
+  #     textInput(inputId = "user_name", label = "User Name"),
+  #     textInput(inputId = "user_password", label = "Password"),
+  # 
+  #     actionButton(class="standard-btn", inputId = "login_button", label = "Login"),
+  #     actionButton(class="standard-btn", inputId = "cancel_login_button", label = "Cancel")
+  #   )
+  # )
 
   
   #SIDEBAR
@@ -58,7 +58,7 @@ server <- function(id, input, output) {
   
   STUD_FORM_TABLE <<- "students"
   #STUD_HIST_TABLE <<- "stud_historical"
-  MATCH_TABLE <<- "confirmed_matches"
+  MATCH_TABLE <<- "matches"
  
  
   
@@ -115,7 +115,7 @@ server <- function(id, input, output) {
   
   #Inputs & Calculated Reactives
   #-----------------------------
-  vol_hist <- reactive({ db_data()$VOL_HIST() })
+  #vol_hist <- reactive({ db_data()$VOL_HIST() })
   kpi_current_sem_total_vol <- reactive({  kpi_total_vol <- "100" })
   
   
@@ -145,22 +145,22 @@ server <- function(id, input, output) {
   
   
   
-  output$vol_hist_table <- renderDT({
-    datatable(vol_hist(), #[, c("category", "day", "name", "email", "phone", "new_volunteer","semester",
-                               #"year", "tutor_type", "class", "time", "club_name", "nickname")],
-              
-              #editable = list(target = "row"),
-              class = 'cell-border stripe',
-              selection = "single", 
-              filter = "top",
-              
-              rownames = FALSE,
-              #colnames = c(),
-              options = list(
-                
-              )
-    )
-  })  # %>% formatStyle()
+  # output$vol_hist_table <- renderDT({
+  #   datatable(vol_hist(), #[, c("category", "day", "name", "email", "phone", "new_volunteer","semester",
+  #                              #"year", "tutor_type", "class", "time", "club_name", "nickname")],
+  #             
+  #             #editable = list(target = "row"),
+  #             class = 'cell-border stripe',
+  #             selection = "single", 
+  #             filter = "top",
+  #             
+  #             rownames = FALSE,
+  #             #colnames = c(),
+  #             options = list(
+  #               
+  #             )
+  #   )
+  # })  # %>% formatStyle()
 
  
   
@@ -170,7 +170,7 @@ server <- function(id, input, output) {
   #  UNMATCHED VOLUNTEERS 
   #========================
   
-  unm_volunteers <- reactive({ db_data()$VOL_TUTOR() %>% filter(status == "Unmatched") })
+  unm_volunteers <- reactive({ db_data()$VOL_TUTOR() %>% filter(status == "Unmatched" & num_slots_needed != 0) })
   
   num_unmatched_vols <- reactive ({ nrow(unm_volunteers()) })
 
@@ -185,7 +185,8 @@ server <- function(id, input, output) {
   #Number of days since signed up
   #New or returning volunteer
   output$unmatched_vols_table <- DT::renderDT({
-    DT::datatable(unm_volunteers()[, c('first_name', 'last_name', 'gender','timestamp','returning_indicator')],
+    DT::datatable(unm_volunteers()[, c('first_name', 'last_name', 'num_slots_needed', 'timestamp','returning_indicator',
+                                       'reserved_student_names', 'want_new_student_role_indicator')],
               
               #editable = list(target = "row"),
               class = 'cell-border stripe', 
@@ -194,33 +195,9 @@ server <- function(id, input, output) {
               
               rownames = FALSE,
               
-              # colnames = c( 'First Name', 'Last Name', 'Email', 'Gender', 'Native Language(s)',
-              #               'Other Language(s)', 'Prior Experience?', 'Teaching Certificates', 
-              #               'Education Credentials', 'Timestamp', 'Proof of Vaccination', 
-              #               'Returning Volunteer?', 'Previous Role', 'Students Already Tutoring', 
-              #               'Reregister Acknowledgement 1', 'Reregister Acknowledgement 2', 
-              #               'Desired Start Date', 'Details Regarding Multiple Dates', 'Want New Student?', 
-              #               'Applied in the Past & Not Placed?', 'Had Onboard Call With Staff?', 
-              #               
-              #               'Preferred Role 1', 'Preferred Time 1', 'Online AM Availability 1', 
-              #               'In-Person AM Availability 1', 'Online PM Availability 1', 
-              #               'In-Person PM Availability 1', 'Online Citizenship Availability 1', 
-              #               'Class Level Preference(s)', 'Prefer to Teach Solo? 1', 'Co-Teacher Info 1', 
-              #               'Teaching Format Preference(s) 1', 'Other Class Schedule Info 1', 
-              #               
-              #               'Tutor Type Preference 1', 'Preferred Tutor Slot 1', 'AM Tutoring Availability 1', 
-              #               'PM Tutoring Availability 1', 'Weekend Tutoring Availability 1', 
-              #               'Tutor Level Preference(s) 1', 'Number of New Students 1', 
-              #               'Available Before Specific Date? 1', 'Other Tutoring Schedule Info 1', 
-              #               'Preferred Role 2', 'Preferred Time 2', 'Online AM Availability 2', 
-              #               'In-Person AM Availability 2', 'Online PM Availability 2', 
-              #               'In-Person PM Availability 2', 'Online Citizenship Availability 2', 
-              #               'Class Level Preference(s) 2', 'Prefer to Teach Solo? 2', 'Co-Teacher Info 2', 
-              #               'Teaching Format Preference(s) 2', 'Open to Accepting Both Choices? 1', 
-              #               'Other Class Schedule Info 2', 'Tutor Type Preference 2', 'Preferred Tutor Slot 2',
-              #               'AM Tutoring Availability 2', 'PM Tutoring Availability 2', 'Tutor Level Preference(s) 2',
-              #               'Number of New Students 2', 'Open to Accepting Both Choices? 2', 
-              #               'Available Before Specific Date? 2', 'Other Tutoring Schedule Info 2' ),
+              colnames = c( 'First Name', 'Last Name', 'Number Slots to Fill', 'Date Registered', 'Returning?',
+                            'Reserved Students', 'Need New Student?'),
+              
               options = list(
                 
                 columnDefs = list(list(className = 'dt-left', targets = '_all')),
@@ -236,7 +213,7 @@ server <- function(id, input, output) {
   #  STUDENTS
   #------------------
     
-  unm_students <- reactive({ db_data()$STUD_FORM() %>% filter(status == "Unmatched") })
+  unm_students <- reactive({ db_data()$STUD_FORM() %>% filter(status == "Unmatched" & num_slots_needed != 0) })
   
   num_unmatched_studs <- reactive({ nrow(unm_students()) })
 
@@ -250,23 +227,16 @@ server <- function(id, input, output) {
   #Outputs
   #------------------
   output$unmatched_stud_table <- DT::renderDT({
-    DT::datatable(unm_students()[, c('first_name', 'last_name', 'gender', 'native_lang', 'timestamp')],
+    DT::datatable(unm_students()[, c('first_name', 'last_name', 'num_slots_needed', 'native_lang', 'timestamp',
+                                    'want_same_tutor')],
               
               class = 'cell-border stripe',
               #editable = list(target = "row"),
               filter = "top",
               
               rownames = FALSE,
-              # colnames = c( "ID", "Timestamp", "Email","Tutoring Selection","English Level",
-              #              "Last Name","First Name","Phone Number","Address","City / State / Zip",
-              #              "Birthday", "Age", "Gender","Home Country","Native Language(s)",
-              #              "Ethnicity","Race","Employment Status (Student)","Monthly Income (Student)",
-              #              "Number of Dependents","Employment Status (Spouse)","Monthly Income (Spouse)",
-              #              "Employment Affected by Covid?","Highest Education","Request Same Tutor(s)?",
-              #              "Requested Tutor Name(s)","Time Slot 1","Time Slot 2","Time Slot 3",
-              #              "Time Slot 4","Time Slot 5","Time Slot 6","Time Slot 7","Time Slot 8",
-              #              "Time Slot 9","Time Slot 10","How You Heard About WEC","Role", "Status"),
-              # 
+              colnames = c("First Name", "Last Name", "Number Slots to Fill", "Native Language", "Date Registered", "Need New Tutor?"),
+
               selection = 'single',
               options = list(
                 columnDefs = list(list(className = 'dt-left', targets = '_all')),
@@ -284,6 +254,49 @@ server <- function(id, input, output) {
   #  MATCHES (CONFIRMED)
   #------------------
   
+  
+  new_matches <- reactive({ db_data()$MATCHES() %>% filter(match_type == "New") })
+  re_matches <- reactive({ db_data()$MATCHES() %>% filter(match_type == "Re") })
+  
+  
+  output$new_matches_table <- DT::renderDT({
+    DT::datatable(new_matches(), #[, c('first_name', 'last_name', 'gender', 'native_lang', 'timestamp',
+                                     #'want_same_tutor')],
+                  
+                  class = 'cell-border stripe',
+                  #editable = list(target = "row"),
+                  filter = "top",
+                  
+                  rownames = FALSE,
+                  #colnames = c("First Name", "Last Name", "Gender", "Native Language", "Date Registered", "Need New Tutor?"),
+                  
+                  selection = 'single',
+                  options = list(
+                    columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                    dom = "tip"
+                  )
+    )
+  })  # %>% formatStyle()
+  
+  
+  output$re_matches_table <- DT::renderDT({
+    DT::datatable(re_matches(), #[, c('first_name', 'last_name', 'gender', 'native_lang', 'timestamp',
+                  #'want_same_tutor')],
+                  
+                  class = 'cell-border stripe',
+                  #editable = list(target = "row"),
+                  filter = "top",
+                  
+                  rownames = FALSE,
+                  #colnames = c("First Name", "Last Name", "Gender", "Native Language", "Date Registered", "Need New Tutor?"),
+                  
+                  selection = 'single',
+                  options = list(
+                    columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                    dom = "tip"
+                  )
+  )
+  })  # %>% formatStyle()
   
   
   

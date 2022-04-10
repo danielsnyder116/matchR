@@ -25,9 +25,9 @@ viewProfileUI <- function(id) {
                                 
                                 fluidRow(
                                   column(12,
-                                         disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_update_profile_{notes_table_name}')),
+                                         disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_update_profile_{indiv_notes_table_name}')),
                                                                label = "Update Info", icon=icon("user-edit", style="padding-right: 4px;"))),
-                                         br(),
+                                         br(), br(),
                                          div(DT::dataTableOutput(outputId = ns(contact_table_name)), style="white-space:nowrap;")
                                   )
                                 ),
@@ -56,7 +56,7 @@ viewProfileUI <- function(id) {
                                 disabled(actionButton(class='standard-btn', inputId = ns(glue("initial_match_{rec_matches_table_name}")), 
                                                   label = "Match", icon = icon("people-arrows"))), #icon("exchange-alt")
                                 
-                                actionButton(class='standard-btn', inputId = ns(glue("initial_rerun_algo_{rec_matches_table_name}")),
+                                actionButton(class='standard-btn', inputId = ns(glue("initial_run_algo_{rec_matches_table_name}")),
                                                       label = "Rerun Algorithm", icon = icon("redo", style='padding-right: 4px;')),
                               
                                 h5("Click on a row to enable button and confirm new match."),
@@ -76,37 +76,37 @@ viewProfileUI <- function(id) {
                                 value = ns("notes_tab"),
                                 br(),
                                 
-                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_add_note_{notes_table_name}')),
+                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_add_note_{indiv_notes_table_name}')),
                                              label = "Add", icon=icon("plus", style="padding-right: 4px;"))),
                                 
-                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_edit_note_{notes_table_name}')),
+                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_edit_note_{indiv_notes_table_name}')),
                                              label = "Edit", icon=icon("edit", style="padding-right: 4px;"))),
                                 
-                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_delete_note_{notes_table_name}')),
+                                disabled(actionButton(class = 'standard-btn', inputId = ns(glue('initial_delete_note_{indiv_notes_table_name}')),
                                              label = "Delete", icon=icon("trash-alt", style="padding-right: 4px;"))),
                                 br(), 
                                 
-                                div(DT::dataTableOutput(outputId = ns(notes_table_name)), style="white-space:nowrap; padding:0px 20px 20px 20px;")
+                                div(DT::dataTableOutput(outputId = ns(indiv_notes_table_name)), style="white-space:nowrap; padding:0px 20px 20px 20px;")
        
-                       ),
+                       )#,
                        
-                       #CURRENT SEMESTER
-                       tabPanel(title = "Current Semester",
-                                value = ns("current_semester_tab"),
-                                
-                       ),
-                       
-                       #PREVIOUS SEMESTER
-                       tabPanel(title = "Previous Semester",
-                                value = ns("previous_semester_tab")
-                                
-                       ),
-                       
-                      
-                       #ALL HISTORY
-                       tabPanel(title = "All History",
-                                value = ns("history_tab")
-                       ),
+                       # #CURRENT SEMESTER
+                       # tabPanel(title = "Current Semester",
+                       #          value = ns("current_semester_tab"),
+                       #          
+                       # ),
+                       # 
+                       # #PREVIOUS SEMESTER
+                       # tabPanel(title = "Previous Semester",
+                       #          value = ns("previous_semester_tab")
+                       #          
+                       # ),
+                       # 
+                       # 
+                       # #ALL HISTORY
+                       # tabPanel(title = "All History",
+                       #          value = ns("history_tab")
+                       # ),
            ) #tabsetPanel   
   ) #tabPanel
 

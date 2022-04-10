@@ -18,10 +18,11 @@ header <- dashboardHeader(
            
             #CUSTOM HEADER TITLE
             #There is no non-hacky way of doing this - have to tweak dropdown menu html
-            tags$li(class = "dropdown", div(id='center-title', icon('people-arrows', style='padding-right: 4px; font-size:28px;'), 'matchR')),
+            tags$li(class = "dropdown", div(id='center-title', icon('people-arrows', style='padding-right: 4px; font-size:28px;'), 'matchR'))
+            #,
 
-            dropdownMenuCustom(type = "messages", icon = icon('user'), badgeStatus = NULL),
-            dropdownMenuCustom(type = "notifications", icon = icon('cog'), badgeStatus = NULL)
+            # dropdownMenuCustom(type = "messages", icon = icon('user'), badgeStatus = NULL),
+            # dropdownMenuCustom(type = "notifications", icon = icon('cog'), badgeStatus = NULL)
 
 )
 
@@ -79,6 +80,12 @@ body <- dashboardBody(
             #valueBoxOutput(outputId = "over_total_matches", width = 2) %>% withSpinner()
           ),
           
+          br(), br(), br(),
+          br(), br(), br(),
+          br(), br(), br(),
+          br(), br(), br(),
+          br(), br(), br(),
+          br(), br(), br(),
           br(), br(), br()
           
          #br()
@@ -185,9 +192,11 @@ body <- dashboardBody(
               disabled(actionButton(class = 'standard-btn', inputId = "initial_rematch_button", 
                                     label = "Rematch", icon = icon("people-arrows", style='padding-right:4px;'))),
               
-              h5("Click on a match row to enable button and confirm match."),
+              h5("Click on a match row to enable button and take actions."),
               
-              br()
+              br(),
+              
+              div(DT::dataTableOutput(outputId = "re_matches_table"), style="overflow-x:scroll;white-space:nowrap;")
               
               
               
@@ -208,9 +217,10 @@ body <- dashboardBody(
               disabled(actionButton(class = 'standard-btn', inputId = "initial_unmatch_button", label = "Unmatch",
                                     icon = icon("unlink", style='padding-right:4px;'))),
               
-              br(), br(),
+              h5("Click on a match row to enable button and take actions."),
+              br(),
               
-              div(DT::dataTableOutput(outputId = "matches_table"), style="overflow-x:scroll;white-space:nowrap;")
+              div(DT::dataTableOutput(outputId = "new_matches_table"), style="overflow-x:scroll;white-space:nowrap;")
 
             ),
           

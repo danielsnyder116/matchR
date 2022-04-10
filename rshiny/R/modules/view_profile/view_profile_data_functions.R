@@ -51,6 +51,13 @@ get_profile <- function(){
 }
 
 
+
+run_rec_algorithm <- function(){
+  print("VP-F-07: Rerunning recommended matches algorithm with updated data")
+  source("/Users/Daniel/Desktop/WEC/Shiny/matchr/rshiny/matching_process.R")
+}
+
+
 get_rec_matches <- function() {
   print("VP-F-02: Getting potential matches for the individual")
   
@@ -68,27 +75,53 @@ get_rec_matches <- function() {
 }
 
 
-get_notes <- function(){
+get_indiv_notes <- function(){
   print("VP-F-03: Getting notes on viewed individual")
   
   #Filter to rows associated with volunter id and then show students (using their id)
   if (rv$role == "Volunteer") {
-    data <- load_data("notes") %>% filter(id == rv$id) 
+    data <- load_data("indiv_notes") %>% filter(id == rv$id) 
   }
   
   #Filter to rows associated with student id and then show volunteers (using their id)
   else {
-    data <- load_data("notes") %>% filter(id == rv$id)
+    data <- load_data("indiv_notes") %>% filter(id == rv$id)
   }
   
   return(data)
 }
 
+# get_match_notes <- function(){
+#   print("VP-F-03: Getting notes on match")
+#   
+#   #Filter to rows associated with volunter id and then show students (using their id)
+#   data <- load_data("match_notes") %>% filter(match_id == rv$id)
+#   
+#   return(data)
+# }
 
 
 #get_current_semester <- function() {}
 #get_previous_semester <- function() {}
 #get_all_history <- function() {}
+
+
+set_match_id <- function(){
+  
+  #Get all current match ids
+  current_max_id <- load_data(MATCH_TABLE) %>% mutate(match_id = as.integer(match_id)) %>% pull(match_id) %>% max()
+  
+  #For first match when no ids are created
+  if (current_max_id == -Inf) {
+    match_id <- "0001"
+  }
+  
+  else {
+    match_id <- as.character(current_max_id + 1)
+  }
+  
+  return(match_id)
+}
 
 
 
