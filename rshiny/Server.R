@@ -91,16 +91,18 @@ server <- function(id, input, output) {
   })
   
   
-  unmatched_vol_names <<- reactive({ db_data()$VOL_FORM() %>% 
-                                          filter(status == "Unmatched") %>% 
+  unmatched_vol_names <<- reactive({ db_data()$VOL_TUTOR() %>% 
+                                          filter(status == "Unmatched" & !str_detect(first_name, "^$|\\s+")) %>% 
+                                          arrange(first_name, last_name) %>%
                                           mutate(full_name = paste(first_name, last_name)) %>% 
-                                          select(full_name) %>% arrange()
+                                          select(full_name)
   })
   
   unmatched_stud_names <<- reactive({ db_data()$STUD_FORM() %>% 
-                                          filter(status == "Unmatched") %>% 
+                                          filter(status == "Unmatched" & !str_detect(first_name, "^$|\\s+")) %>% 
+                                          arrange(first_name, last_name) %>%
                                           mutate(full_name = paste(first_name, last_name)) %>% 
-                                          select(full_name) %>% arrange()
+                                          select(full_name)
   })
 
   
@@ -188,20 +190,29 @@ server <- function(id, input, output) {
     DT::datatable(unm_volunteers()[, c('first_name', 'last_name', 'num_slots_needed', 'timestamp','returning_indicator',
                                        'reserved_student_names', 'want_new_student_role_indicator')],
               
-              #editable = list(target = "row"),
+              #editable = list(target = "row", disable = list(columns = c(2, 3))),
               class = 'cell-border stripe', 
               filter = "top",
               selection =  'single',
+              extensions = 'Buttons',
               
               rownames = FALSE,
-              
               colnames = c( 'First Name', 'Last Name', 'Number Slots to Fill', 'Date Registered', 'Returning?',
                             'Reserved Students', 'Need New Student?'),
               
               options = list(
                 
                 columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                dom = "tip"
+                dom = "Btip",
+                buttons = list("copy", 
+                            list(extend = "collection", 
+                              buttons = list(
+                                          list(extend = "csv", title = glue("unmatched_tutor_volunteers_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "excel", title = glue("unmatched_tutor_volunteers_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "pdf", title = glue("unmatched_tutor_volunteers_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                          ),
+                    text = "Download")
+                )
               )
     )
   })
@@ -210,7 +221,7 @@ server <- function(id, input, output) {
   
   
   #-----------------------------------------------------------------------------------------
-  #  STUDENTS
+  # UNMATCHED STUDENTS
   #------------------
     
   unm_students <- reactive({ db_data()$STUD_FORM() %>% filter(status == "Unmatched" & num_slots_needed != 0) })
@@ -227,20 +238,31 @@ server <- function(id, input, output) {
   #Outputs
   #------------------
   output$unmatched_stud_table <- DT::renderDT({
-    DT::datatable(unm_students()[, c('first_name', 'last_name', 'num_slots_needed', 'native_lang', 'timestamp',
-                                    'want_same_tutor')],
+    DT::datatable(unm_students()[, c('first_name', 'last_name', 'num_slots_needed', 'timestamp', 'native_lang', 
+                                    'want_same_tutor', 'made_payment')],
               
               class = 'cell-border stripe',
-              #editable = list(target = "row"),
+              #editable = list(target = "row", disable = list(columns = c(2, 3))),
               filter = "top",
+              extensions = "Buttons",
               
               rownames = FALSE,
-              colnames = c("First Name", "Last Name", "Number Slots to Fill", "Native Language", "Date Registered", "Need New Tutor?"),
+              colnames = c("First Name", "Last Name", "Number Slots to Fill", "Date Registered", "Native Language", 
+                           "Need New Tutor?", "Paid?"),
 
               selection = 'single',
               options = list(
                 columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                dom = "tip"
+                dom = "Btip",
+                buttons = list("copy", 
+                               list(extend = "collection", 
+                                    buttons = list(
+                                      list(extend = "csv", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                      list(extend = "excel", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                      list(extend = "pdf", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                    ),
+                                    text = "Download")
+                )
               )
     )
   })  # %>% formatStyle()
@@ -264,8 +286,9 @@ server <- function(id, input, output) {
                                      #'want_same_tutor')],
                   
                   class = 'cell-border stripe',
-                  #editable = list(target = "row"),
+                  #editable = list(target = "row", disable = list(columns = )),
                   filter = "top",
+                  extensions = "Buttons",
                   
                   rownames = FALSE,
                   #colnames = c("First Name", "Last Name", "Gender", "Native Language", "Date Registered", "Need New Tutor?"),
@@ -273,7 +296,16 @@ server <- function(id, input, output) {
                   selection = 'single',
                   options = list(
                     columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                    dom = "tip"
+                    dom = "Btip",
+                    buttons = list("copy", 
+                                   list(extend = "collection", 
+                                        buttons = list(
+                                          list(extend = "csv", title = glue("tutoring_new_matches_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "excel", title = glue("tutoring_new_matches_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "pdf", title = glue("tutoring_new_matches_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                        ),
+                                        text = "Download")
+                    )
                   )
     )
   })  # %>% formatStyle()
@@ -284,18 +316,124 @@ server <- function(id, input, output) {
                   #'want_same_tutor')],
                   
                   class = 'cell-border stripe',
-                  #editable = list(target = "row"),
+                  #editable = list(target = "row", disable = list(columns = )),
                   filter = "top",
+                  selection = 'single',
+                  extensions = "Buttons",
                   
                   rownames = FALSE,
                   #colnames = c("First Name", "Last Name", "Gender", "Native Language", "Date Registered", "Need New Tutor?"),
                   
+                  options = list(
+                    columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                    dom = "Btip",
+                    buttons = list("copy", 
+                                   list(extend = "collection", 
+                                        buttons = list(
+                                          list(extend = "csv", title = glue("tutoring_rematches_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "excel", title = glue("tutoring_rematches_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "pdf", title = glue("tutoring_rematches_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                        ),
+                                        text = "Download")
+                    )
+                  )
+  )
+  })  # %>% formatStyle()
+  
+  
+  
+  #========================
+  #  MATCHED VOLUNTEERS 
+  #========================
+  
+  matched_vols <- reactive({ db_data()$VOL_TUTOR() %>% filter(num_slots_needed == 0) })
+  
+  num_matched_vols <- reactive ({ nrow(matched_vols()) })
+  
+  output$num_matched_vols <- renderValueBox({ 
+    valueBox(num_matched_vols(), subtitle = "Matched Volunteers", 
+             color = "green", icon = icon("user-check"))
+  })
+  
+  
+  
+  #TODO: Identify key cols to show in unmatched table
+  #Number of days since signed up
+  #New or returning volunteer
+  output$matched_vols_table <- DT::renderDT({
+    DT::datatable(matched_vols()[, c('first_name', 'last_name', 'returning_indicator')],
+                  
+                  #editable = list(target = "row", disable = list(columns = c(2, 3))),
+                  class = 'cell-border stripe', 
+                  filter = "top",
+                  selection =  'single',
+                  extensions = "Buttons",
+                  
+                  rownames = FALSE,
+                  colnames = c( 'First Name', 'Last Name', 'Returning?'),
+                  options = list(
+                    
+                    columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                    dom = "Btip",
+                    buttons = list("copy", 
+                                   list(extend = "collection", 
+                                        buttons = list(
+                                          list(extend = "csv", title = glue("matched_tutor_volunteers_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "excel", title = glue("matched_tutor_volunteers_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "pdf", title = glue("matched_tutor_volunteers_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                        ),
+                                        text = "Download")
+                    )
+                  )
+    )
+  })
+  
+  
+  
+  
+  #-----------------------------------------------------------------------------------------
+  #  MATCHED STUDENTS
+  #------------------
+  
+  matched_studs <- reactive({ db_data()$STUD_FORM() %>% filter(num_slots_needed == 0) })
+  
+  num_matched_studs <- reactive({ nrow(matched_studs()) })
+  
+  output$num_matched_studs <- renderValueBox({ 
+    valueBox(value = num_matched_studs(), subtitle = "Matched Students", 
+             color = "green", icon = icon("user-check"))  
+  })
+  
+  #stud_hist <- reactive({ db_data()$STUD_HIST })
+  
+  #Outputs
+  #------------------
+  output$matched_studs_table <- DT::renderDT({
+    DT::datatable(matched_studs()[, c('first_name', 'last_name')],
+                  
+                  class = 'cell-border stripe',
+                  #editable = list(target = "row", disable = list(columns = c(2, 3))),
+                  filter = "top",
+                  extensions = "Buttons",
+                  
+                  rownames = FALSE,
+                  colnames = c("First Name", "Last Name"),
+                  
                   selection = 'single',
                   options = list(
                     columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                    dom = "tip"
+                    dom = "Btip",
+                    buttons = list("copy", 
+                                   list(extend = "collection", 
+                                        buttons = list(
+                                          list(extend = "csv", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "excel", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "pdf", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                        ),
+                                        text = "Download")
+                    )
                   )
-  )
+    )
   })  # %>% formatStyle()
   
   

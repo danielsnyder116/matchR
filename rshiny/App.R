@@ -47,6 +47,8 @@ source("R/global.R")
 source("R/core_functions.R")
 source("R/custom_ui_styling.R")
 
+source("../db/db_functions.R")
+
 #Modules
 source("./R/modules/view_profile/viewProfileServer.R")
 source("./R/modules/view_profile/viewProfileUI.R")

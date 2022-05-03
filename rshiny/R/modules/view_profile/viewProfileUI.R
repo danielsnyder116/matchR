@@ -60,6 +60,9 @@ viewProfileUI <- function(id) {
                                                       label = "Rerun Algorithm", icon = icon("redo", style='padding-right: 4px;')),
                               
                                 h5("Click on a row to enable button and confirm new match."),
+                                br(),
+                                h5("Note: Students who are set to continue with previous tutor do not automatically have
+                                   match recommendations. By running the algorithm one can generate them if needed."),
                                 
                                 br(),
                               

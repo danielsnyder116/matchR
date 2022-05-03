@@ -28,14 +28,18 @@ df_users <- read.csv("../data/initial_users.csv")
 # volunteers <- volunteers %>% mutate(id = 1:nrow(volunteers)) %>% select(id, everything())
 
 df_tutors <- read.csv("../data/tutor_vols.csv") 
-df_tutors <- df_tutors %>% mutate(id = 1:nrow(df_tutors), num_slots_needed = 2) 
+df_tutors <- df_tutors %>% mutate(id = as.character(1:nrow(df_tutors)), 
+                                  num_slots_needed = MAX_SLOTS) 
 
 #Data students submitted via google forms
 students <- read.csv("../data/students.csv")
-students <- students %>% mutate(id = 1:nrow(students), num_slots_needed = 2) %>% select(id, everything())
+students <- students %>% mutate(id = 1:nrow(students), 
+                                num_slots_needed = MAX_SLOTS,
+                                made_payment = "") %>% select(id, everything())
 
 
 #Matches
+#TODO: Populate table with data on current matches at WEC 
 matches <- tibble(match_id = character(),
                   match_owner = character(),
                   match_type = character(),
@@ -47,7 +51,8 @@ matches <- tibble(match_id = character(),
                   stud_name = character(),
                   stud_email = character(),
                   meeting_time = character(),
-                  date_matched = character(),
+                  date_first_matched = character(),
+                  date_most_recent_match = character(),
                   num_sessions_completed = character()
             )
 

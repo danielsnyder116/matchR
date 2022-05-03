@@ -68,13 +68,25 @@ viewProfileServer <- function(id, session_input) {
         DT::datatable(tables[[contact_table_name]], #[, c("field", "value")],
                   
                   class = 'cell-border stripe',
+                  editable = list(target = "column", disable = list(columns = c(0))),
                   selection = 'single',
+                  
+                  extensions = "Buttons",
                   
                   rownames = FALSE,
                   #colnames =,
                   options = list(
                     #columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                    dom = ""
+                    dom = "B",
+                    buttons = list("copy", 
+                                   list(extend = "collection", 
+                                        buttons = list(
+                                          list(extend = "csv", title = glue("{rv$id}_{rv$name}_contact_info_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "excel", title = glue("{rv$id}_{rv$name}_contact_info_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "pdf", title = glue("{rv$id}_{rv$name}_contact_info_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                        ),
+                                        text = "Download")
+                    )
                   )
         )
     })
@@ -85,13 +97,24 @@ viewProfileServer <- function(id, session_input) {
       DT::datatable(tables[[dem_table_name]], #[, c("field", "value")],
                     
                     class = 'cell-border stripe',
+                    editable = list(target = "column", disable = list(columns = c(0))),
                     selection = 'single',
+                    extensions = "Buttons",
                     
                     rownames = FALSE,
                     #colnames =,
                     options = list(
                       #columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                      dom = "tip"
+                      dom = "Btip",
+                      buttons = list("copy", 
+                                     list(extend = "collection", 
+                                          buttons = list(
+                                            list(extend = "csv", title = glue("{rv$id}_{rv$name}_demog_info_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                            list(extend = "excel", title = glue("{rv$id}_{rv$name}_demog_info_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                            list(extend = "pdf", title = glue("{rv$id}_{rv$name}_demog_info_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                          ),
+                                          text = "Download")
+                      )
                     )
       )
     })
@@ -102,13 +125,24 @@ viewProfileServer <- function(id, session_input) {
       DT::datatable(tables[[details_table_name]], #[, c("field", "value")],
                     
                     class = 'cell-border stripe',
+                    editable = list(target = "column", disable = list(columns = c(0))),
                     selection = 'single',
+                    extensions = "Buttons",
                     
                     rownames = FALSE,
                     #colnames =,
                     options = list(
                       #columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                      dom = "tip"
+                      dom = "Btip",
+                      buttons = list("copy", 
+                                     list(extend = "collection", 
+                                          buttons = list(
+                                            list(extend = "csv", title = glue("{rv$id}_{rv$name}_availability_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                            list(extend = "excel", title = glue("{rv$id}_{rv$name}_availability_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                            list(extend = "pdf", title = glue("{rv$id}_{rv$name}_availability_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                          ),
+                                          text = "Download")
+                      )
                     )
       )
     })
@@ -124,7 +158,7 @@ viewProfileServer <- function(id, session_input) {
                                                          #-----------------------------
                                                          
                                                          #Open Slots
-                                                         "num_tutees", "vol_num_tutees_avail", 
+                                                         "num_slots_needed",
                                                          
                                                          #Availability
                                                          "desired_start_date", "avail_before_date_indicator", "vol_start_date_avail",
@@ -144,14 +178,25 @@ viewProfileServer <- function(id, session_input) {
                                                          )],
                     
                     class = 'cell-border stripe',
+                    #editable = list(target = "column", disable = list(columns = c(0))),
                     selection = 'single',
                     filter = "top",
+                    extensions = "Buttons",
                     
                     rownames = FALSE,
                     #colnames = c("ID", "First Name", "Last Name", "Email", "Score", "Best Fit Ranking"),
                     options = list(
                       #columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                      dom = "tip"
+                      dom = "Btip",
+                      buttons = list("copy", 
+                                     list(extend = "collection", 
+                                          buttons = list(
+                                            list(extend = "csv", title = glue("{rv$id}_{rv$name}_rec_matches_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                            list(extend = "excel", title = glue("{rv$id}_{rv$name}_rec_matches_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                            list(extend = "pdf", title = glue("{rv$id}_{rv$name}_rec_matches_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                          ),
+                                          text = "Download")
+                      )
                     )
       )
     })
@@ -162,13 +207,24 @@ viewProfileServer <- function(id, session_input) {
       DT::datatable(tables[[indiv_notes_table_name]][, c("note_category", "note_contents", "note_owner", "note_date")],
                     
                     class = 'cell-border stripe',
+                    editable = list(target = "row", disable = list(columns = c(3))),
                     selection = 'single',
+                    extensions = "Buttons",
                     
                     rownames = FALSE,
                     colnames = c("Category", "Content", "Made By", "Date Made"),
                     options = list(
                       #columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                      dom = "tip"
+                      dom = "Btip",
+                      buttons = list("copy", 
+                                     list(extend = "collection", 
+                                          buttons = list(
+                                            list(extend = "csv", title = glue("{rv$id}_{rv$name}_notes_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                            list(extend = "excel", title = glue("{rv$id}_{rv$name}_notes_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                            list(extend = "pdf", title = glue("{rv$id}_{rv$name}_notes_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                          ),
+                                          text = "Download")
+                      )
                     )
       )
     })
@@ -210,6 +266,8 @@ viewProfileServer <- function(id, session_input) {
     OE[[glue("3_{rv$id}")]] <- observeEvent(input[[glue("secondary_match_{rec_matches_table_name}")]], ignoreInit = TRUE, {
       print("VP-OE-04: Secondary match button clicked")
       
+      show_toast(title = "Creating new match...", type = "success", timer = 6000, position = "center")
+
       #--------------------------------------
       # STEP 1: Add new match to matches table
       #--------------------------------------
@@ -232,13 +290,14 @@ viewProfileServer <- function(id, session_input) {
       stud_email <- ""
       
       meeting_time <- ""
-      date_matched <- as.character(now())
+      date_first_matched <- as.character(now())
+      date_most_recent_match <- as.character(now())
       num_sessions_completed <- 0
       
       #Converting vector into one list with appropriate single quotes
       new_row <- glue_collapse(c(match_id, match_owner, match_type, status, vol_id, vol_name, vol_email, 
-                                 stud_id, stud_name, stud_email, meeting_time, date_matched, 
-                                 num_sessions_completed), sep="', '")
+                                 stud_id, stud_name, stud_email, meeting_time, date_first_matched, 
+                                 date_most_recent_match, num_sessions_completed), sep="', '")
 
       #Update backend db
       db <- dbConnect(SQLite(), DB_PATH)
@@ -267,17 +326,16 @@ viewProfileServer <- function(id, session_input) {
       #--------------------------------------
       #STEP 4: Update rec matches table
       # - step 3 should ensure volunteer values and availability are up-to-date
-      # - rerun algorithm 
+      # - rerun algorithm for everyone
       #--------------------------------------
-      run_rec_algorithm()
-      
-      tables[[rec_matches_table_name]] <<- get_rec_matches()
+      #run_algorithm_all()
 
-      
       #--------------------------------------
       # STEP 5: Refresh tables and close modal
       #--------------------------------------
-      match_trigger()
+      match_trigger(match_trigger() + 1)
+      
+      tables[[rec_matches_table_name]] <<- get_rec_matches()
       
       removeModal()
     })
@@ -292,7 +350,7 @@ viewProfileServer <- function(id, session_input) {
     })
     
 
-    #RE-RUN ALGORITM BUTTON CLICKED
+    #RE-RUN ALGORITHM BUTTON CLICKED
     OE[[glue("5_{rv$id}")]] <- observeEvent(input[[glue("initial_run_algo_{rec_matches_table_name}")]], ignoreInit = TRUE, {
       print("VP-OE-05: Initial re-run algorithm button clicked")
       
@@ -313,7 +371,9 @@ viewProfileServer <- function(id, session_input) {
     OE[[glue("6_{rv$id}")]] <- observeEvent(input[[glue("secondary_run_algo_{rec_matches_table_name}")]], ignoreInit = TRUE, {
       print("VP-OE-08: Secondary rerun algorithm button clicked")
       
-      run_rec_algorithm()
+      #show_toast(title = "Rerunning matching algorithm...", type = "success", timer = 2000, position = "center")
+      
+      run_algorithm_one()
       
       tables[[rec_matches_table_name]] <<- get_rec_matches()
 

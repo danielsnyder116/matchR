@@ -96,13 +96,13 @@ body <- dashboardBody(
         tabPanel(
           title = 'User Guide',
           value = 'home_user_guide_tab'
-        ),
+        )#,
         
         
-        tabPanel(
-          title = 'Report a Bug',
-          value = 'home_bug_tab'
-        )
+        # tabPanel(
+        #   title = 'Report a Bug',
+        #   value = 'home_bug_tab'
+        # )
       ) #tabsetPanel
     ),
     
@@ -115,7 +115,7 @@ body <- dashboardBody(
     #----------
     tabItem(
       tabName = 'sidebar_matching',
-      h4(span("Matching", style="padding-right:1150px"),  actionButton(inputId = "overall_refresh_button", label = "Refresh",
+      h4(span("Matching", style="padding-right:1450px"),  actionButton(inputId = "overall_refresh_button", label = "Refresh",
                                        icon = icon("sync-alt", style='padding-right:4px;')), 
                          
          style='display:block;'
@@ -183,25 +183,6 @@ body <- dashboardBody(
           
           tabsetPanel(id = 'setpanel_match_types',
                       
-            #RE/CONTINUED MATCHES
-            tabPanel(
-              title = "Re-Matches",
-              value = "rematches_tab",
-              br(),
-              
-              disabled(actionButton(class = 'standard-btn', inputId = "initial_rematch_button", 
-                                    label = "Rematch", icon = icon("people-arrows", style='padding-right:4px;'))),
-              
-              h5("Click on a match row to enable button and take actions."),
-              
-              br(),
-              
-              div(DT::dataTableOutput(outputId = "re_matches_table"), style="overflow-x:scroll;white-space:nowrap;")
-              
-              
-              
-            ),
-            
             #NEW MATCHES
             tabPanel(
               title = "New Matches",
@@ -223,10 +204,67 @@ body <- dashboardBody(
               div(DT::dataTableOutput(outputId = "new_matches_table"), style="overflow-x:scroll;white-space:nowrap;")
 
             ),
-          
-          ), #tabsetPanel
+            
+            #RE/CONTINUED MATCHES
+            tabPanel(
+              title = "Re-Matches",
+              value = "rematches_tab",
+              br(),
+              
+              disabled(actionButton(class = 'standard-btn', inputId = "initial_rematch_button", 
+                                    label = "Rematch", icon = icon("people-arrows", style='padding-right:4px;'))),
+              
+              h5("Click on a match row to enable button and take actions."),
+              
+              br(),
+              
+              div(DT::dataTableOutput(outputId = "re_matches_table"), style="overflow-x:scroll;white-space:nowrap;")
+            )
+          ) #tabsetPanel
 
-        ) #tabPanel Matches
+        ), #tabPanel Matches
+        
+        
+        #MATCHED STUDENTS
+        tabPanel(
+          title = "Matched Students",
+          value = "matched_stud_tab",
+          br(),
+          
+          fluidRow(
+            valueBoxOutput(outputId = "num_matched_studs", width = 2) %>% withSpinner()
+          ),
+          
+          disabled(actionButton(class = 'standard-btn', inputId = "view_stud_match_button", 
+                                label = "View Profile", icon=icon("folder-open", style='padding-right: 4px;'))),
+          
+          h5("Click on a match row to enable button and take actions."),
+          
+          br(),
+          
+          div(DT::dataTableOutput(outputId = "matched_studs_table"), style="overflow-x:scroll;white-space:nowrap;")
+        ),
+        
+        
+        #MATCHED VOLUNTEERS
+        tabPanel(
+          title = "Matched Volunteers",
+          value = "matched_vol_tab",
+          br(),
+          
+          fluidRow(
+            valueBoxOutput(outputId = "num_matched_vols", width = 2) %>% withSpinner()
+          ),
+          
+          disabled(actionButton(class = 'standard-btn', inputId = "view_vol_match_button", 
+                                label = "View Profile", icon=icon("folder-open", style='padding-right: 4px;'))),
+          
+          h5("Click on a match row to enable button and take actions."),
+          
+          br(),
+          
+          div(DT::dataTableOutput(outputId = "matched_vols_table"), style="overflow-x:scroll;white-space:nowrap;")
+        )
       ) #tabsetPanel
     ), #tabItem
     
