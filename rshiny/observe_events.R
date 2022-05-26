@@ -179,7 +179,9 @@ observeEvent(input$secondary_manual_match_vol_button, {
   #         and gather row data
   #--------------------------------------
 
-  indicator <- unm_volunteers() %>% filter(id==rv$id) %>% pull(want_new_student_role_indicator)
+  indicator <- unm_volunteers() %>% filter(id==rv$id) %>% pull(reserved_student_names)
+  
+  print(indicator)
   
   stud_first_name <- str_split(input$select_student, pattern='\\s+')[[1]][1] %>% str_squish()
   stud_last_name <- str_split(input$select_student, pattern='\\s+')[[1]][2] %>% str_squish()
@@ -190,7 +192,7 @@ observeEvent(input$secondary_manual_match_vol_button, {
                                     
   
   #NEW MATCH
-  if (str_detect(indicator, 'Yes|^$')) {
+  if (indicator == '') {
     
     match_id <- set_match_id()
     match_type <- "New"
@@ -203,23 +205,41 @@ observeEvent(input$secondary_manual_match_vol_button, {
     
   else {
 
+    #Check to see if match has been added to matchR
     df_matches <- db_data()$MATCHES() %>% filter(vol_name==rv$name, stud_name==input$select_student)
     
-    match_id <- df_matches %>% pull(match_id)
-    match_type <- "Re"
-    status <- "Re-matched"
+    #If it has, reference the match info
+    if (nrow(df_matches) != 0) {
+      
+      match_id <- df_matches %>% pull(match_id)
+      match_type <- "Re"
+      status <- "Re-matched"
+      
+      date_first_matched <- df_matches %>% pull(date_first_matched)
+      date_most_recent_match <- as.character(now())
+      meeting_time <- df_matches %>% pull(meeting_time)
+      
+      num_sessions_completed <- df_matches %>% pull(num_sessions_completed)
+      
+      #Ensuring only one value pulled
+      match_id <- match_id[1]
+      date_first_matched <- date_first_matched[1]
+      meeting_time <- meeting_time[1]
+      num_sessions_completed <- num_sessions_completed[1]
+    }
     
-    date_first_matched <- df_matches %>% pull(date_first_matched)
-    date_most_recent_match <- as.character(now())
-    meeting_time <- df_matches %>% pull(meeting_time)
-  
-    num_sessions_completed <- df_matches %>% pull(num_sessions_completed)
-    
-    #Ensuring only one value pulled
-    match_id <- match_id[1]
-    date_first_matched <- date_first_matched[1]
-    meeting_time <- meeting_time[1]
-    num_sessions_completed <- num_sessions_completed[1]
+    #If not, add it to matchR for first time
+    else {
+      match_id <- set_match_id()
+      match_type <- "Re"
+      status <- "Re-matched"
+      
+      date_first_matched <- "Fill In"
+      date_most_recent_match <- as.character(now())
+      meeting_time <- "Fill In"
+      num_sessions_completed <- 9999
+    }
+   
   }
     
     

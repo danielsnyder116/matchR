@@ -47,6 +47,7 @@ server <- function(id, input, output) {
     
   })
   
+  #-------------------------------------------------------------------------------------------------------------------------
   
   #------------------
   #      DATA
@@ -91,28 +92,28 @@ server <- function(id, input, output) {
   })
   
   
-  unmatched_vol_names <<- reactive({ db_data()$VOL_TUTOR() %>% 
+  unmatched_vol_names <- reactive({ db_data()$VOL_TUTOR() %>% 
                                           filter(status == "Unmatched" & !str_detect(first_name, "^$|\\s+")) %>% 
                                           arrange(first_name, last_name) %>%
                                           mutate(full_name = paste(first_name, last_name)) %>% 
                                           select(full_name)
   })
   
-  unmatched_stud_names <<- reactive({ db_data()$STUD_FORM() %>% 
+  unmatched_stud_names <- reactive({ db_data()$STUD_FORM() %>% 
                                           filter(status == "Unmatched" & !str_detect(first_name, "^$|\\s+")) %>% 
                                           arrange(first_name, last_name) %>%
                                           mutate(full_name = paste(first_name, last_name)) %>% 
                                           select(full_name)
   })
-
+  
   
 
-  #-----------------------------------------------------------------------------------------
-  #  VOLUNTEERS
-  #------------------
+  #-------------------------------------------------------------------------------------------------------------------------
+
+  
   
   #=============
-  #  OVERVIEW
+  #  SUMMARY
   #=============
   
   #Inputs & Calculated Reactives
@@ -134,39 +135,128 @@ server <- function(id, input, output) {
   #Compared to last year
   
   #Pulled from matching section, just made outputId unique
-  output$over_num_unmatched_studs <- renderValueBox({ 
+  #--------------------------------------------------------
+  
+  #UNMATCHED STUDENTS
+  output$summ_num_unmatched_studs <- renderValueBox({ 
     valueBox(value = num_unmatched_studs(), subtitle = "Students to Match", 
-             color = "red", icon = icon("user-times"))  
+             color = "orange", icon = icon("user-times"))  
   })
   
-  #Pulled from matching section, just made outputId unique
-  output$over_num_unmatched_vols <- renderValueBox({ 
+  #MATCHED STUDENTS
+  output$summ_num_matched_studs <- renderValueBox({ 
+    valueBox(value = num_matched_studs(), subtitle = "Matched Students", 
+             color = "green", icon = icon("user-check"))  
+  })
+  
+  
+  #UNMATCHED STUDENT SLOTS TO FILL
+  output$summ_num_unfilled_studs <- renderValueBox({ 
+    valueBox(value = num_unfilled_stud_slots(), subtitle = "Student Slots to Fill", 
+             color = "orange", icon = icon("th-list"))  
+  })
+  
+  #FILLED STUDENT SLOTS
+  output$summ_num_filled_studs <- renderValueBox({ 
+    valueBox(value = num_filled_stud_slots(), subtitle = "Filled Student Slots", 
+             color = "green", icon = icon("th-list"))  
+  })
+  
+  
+  
+  #UNMATCHED VOLUNTEERS
+  output$summ_num_unmatched_vols <- renderValueBox({ 
     valueBox(num_unmatched_vols(), subtitle = "Volunteers to Match", 
-             color = "red", icon = icon("user-times"))
+             color = "orange", icon = icon("user-times"))
+  })
+  
+  #MATCHED VOLUNTEERS
+  output$summ_num_matched_vols <- renderValueBox({ 
+    valueBox(num_matched_vols(), subtitle = "Matched Volunteers", 
+             color = "green", icon = icon("user-check"))
   })
   
   
   
-  # output$vol_hist_table <- renderDT({
-  #   datatable(vol_hist(), #[, c("category", "day", "name", "email", "phone", "new_volunteer","semester",
-  #                              #"year", "tutor_type", "class", "time", "club_name", "nickname")],
-  #             
-  #             #editable = list(target = "row"),
-  #             class = 'cell-border stripe',
-  #             selection = "single", 
-  #             filter = "top",
-  #             
-  #             rownames = FALSE,
-  #             #colnames = c(),
-  #             options = list(
-  #               
-  #             )
-  #   )
-  # })  # %>% formatStyle()
+  #VOLUNTEER SLOTS UNFILLED
+  output$summ_num_unfilled_vols <- renderValueBox({ 
+    valueBox(num_unfilled_vol_slots(), subtitle = "Volunteers Slots to Fill", 
+             color = "orange", icon = icon("th-list"))
+  })
+  
+  #FILLED VOL SLOTS
+  output$summ_num_filled_vols <- renderValueBox({
+    valueBox(num_filled_vol_slots(), subtitle = "Filled Volunteer Slots", 
+             color = "green", icon = icon("th-list"))
+  })
+  
+  
+  
+  
+  
 
  
+  #-------------------------------------------------------------------------------------------------------------------------
+  
+  #====================
+  # UNMATCHED STUDENTS
+  #====================
+  
+  unm_students <- reactive({ db_data()$STUD_FORM() %>% filter(status == "Unmatched" & num_slots_needed != 0) })
+  
+  num_unmatched_studs <- reactive({ nrow(unm_students()) })
+  num_unfilled_stud_slots <- reactive({ unm_students() %>% summarize(n = sum(num_slots_needed)) %>% pull(n) })
+  
+  #NUM UNMATCHED STUDENTS
+  output$num_unmatched_studs <- renderValueBox({ 
+    valueBox(value = num_unmatched_studs(), subtitle = "Students to Match", 
+             color = "orange", icon = icon("user-times"))  
+  })
+  
+  #NUM UNMATCHED STUDENT SLOTS TO FILL
+  output$num_unfilled_studs <- renderValueBox({ 
+    valueBox(value = num_unfilled_stud_slots(), subtitle = "Student Slots to Fill", 
+             color = "orange", icon = icon("th-list"))  
+  })
+  
+  #stud_hist <- reactive({ db_data()$STUD_HIST })
+  
+  #Outputs
+  #------------------
+  output$unmatched_stud_table <- DT::renderDT({
+    DT::datatable(unm_students()[, c('first_name', 'last_name', 'num_slots_needed', 'timestamp', 'native_lang', 
+                                     'want_same_tutor', 'made_payment')],
+                  
+                  class = 'cell-border stripe',
+                  #editable = list(target = "row", disable = list(columns = c(2, 3))),
+                  filter = "top",
+                  extensions = "Buttons",
+                  
+                  rownames = FALSE,
+                  colnames = c("First Name", "Last Name", "Number Slots to Fill", "Date Registered", "Native Language", 
+                               "Need New Tutor?", "Paid?"),
+                  
+                  selection = 'single',
+                  options = list(
+                    columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                    dom = "Btip",
+                    buttons = list("copy", 
+                                   list(extend = "collection", 
+                                        buttons = list(
+                                          list(extend = "csv", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "excel", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "pdf", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                        ),
+                                        text = "Download")
+                    )
+                  )
+    )
+  })  # %>% formatStyle()
   
   
+  
+  
+  #-------------------------------------------------------------------------------------------------------------------------
   
   #========================
   #  UNMATCHED VOLUNTEERS 
@@ -175,10 +265,18 @@ server <- function(id, input, output) {
   unm_volunteers <- reactive({ db_data()$VOL_TUTOR() %>% filter(status == "Unmatched" & num_slots_needed != 0) })
   
   num_unmatched_vols <- reactive ({ nrow(unm_volunteers()) })
+  num_unfilled_vol_slots <- reactive({  unm_volunteers() %>% summarize(n = sum(num_slots_needed)) %>% pull(n) })
 
+  #NUM VOLUNTEERS UNMATCHED
   output$num_unmatched_vols <- renderValueBox({ 
     valueBox(num_unmatched_vols(), subtitle = "Volunteers to Match", 
-             color = "red", icon = icon("user-times"))
+             color = "orange", icon = icon("user-times"))
+  })
+  
+  #NUM VOLUNTEER SLOTS UNFILLED
+  output$num_unfilled_vols <- renderValueBox({ 
+    valueBox(num_unfilled_vol_slots(), subtitle = "Volunteers Slots to Fill", 
+             color = "orange", icon = icon("th-list"))
   })
   
 
@@ -188,7 +286,7 @@ server <- function(id, input, output) {
   #New or returning volunteer
   output$unmatched_vols_table <- DT::renderDT({
     DT::datatable(unm_volunteers()[, c('first_name', 'last_name', 'num_slots_needed', 'timestamp','returning_indicator',
-                                       'reserved_student_names', 'want_new_student_role_indicator')],
+                                       'reserved_student_names', 'want_additional_student_indicator')],
               
               #editable = list(target = "row", disable = list(columns = c(2, 3))),
               class = 'cell-border stripe', 
@@ -198,7 +296,7 @@ server <- function(id, input, output) {
               
               rownames = FALSE,
               colnames = c( 'First Name', 'Last Name', 'Number Slots to Fill', 'Date Registered', 'Returning?',
-                            'Reserved Students', 'Need New Student?'),
+                            'Reserved Students', 'Want Additional New Student?'),
               
               options = list(
                 
@@ -218,63 +316,12 @@ server <- function(id, input, output) {
   })
   
   
-  
-  
-  #-----------------------------------------------------------------------------------------
-  # UNMATCHED STUDENTS
-  #------------------
-    
-  unm_students <- reactive({ db_data()$STUD_FORM() %>% filter(status == "Unmatched" & num_slots_needed != 0) })
-  
-  num_unmatched_studs <- reactive({ nrow(unm_students()) })
 
-  output$num_unmatched_studs <- renderValueBox({ 
-    valueBox(value = num_unmatched_studs(), subtitle = "Students to Match", 
-             color = "red", icon = icon("user-times"))  
-  })
+  #-------------------------------------------------------------------------------------------------------------------------
   
-  #stud_hist <- reactive({ db_data()$STUD_HIST })
-  
-  #Outputs
-  #------------------
-  output$unmatched_stud_table <- DT::renderDT({
-    DT::datatable(unm_students()[, c('first_name', 'last_name', 'num_slots_needed', 'timestamp', 'native_lang', 
-                                    'want_same_tutor', 'made_payment')],
-              
-              class = 'cell-border stripe',
-              #editable = list(target = "row", disable = list(columns = c(2, 3))),
-              filter = "top",
-              extensions = "Buttons",
-              
-              rownames = FALSE,
-              colnames = c("First Name", "Last Name", "Number Slots to Fill", "Date Registered", "Native Language", 
-                           "Need New Tutor?", "Paid?"),
-
-              selection = 'single',
-              options = list(
-                columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                dom = "Btip",
-                buttons = list("copy", 
-                               list(extend = "collection", 
-                                    buttons = list(
-                                      list(extend = "csv", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
-                                      list(extend = "excel", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
-                                      list(extend = "pdf", title = glue("unmatched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}"))
-                                    ),
-                                    text = "Download")
-                )
-              )
-    )
-  })  # %>% formatStyle()
-  
-  
-  
-  
-  
-  
-  #-----------------------------------------------------------------------------------------
-  #  MATCHES (CONFIRMED)
-  #------------------
+  #======================
+  # MATCHES (CONFIRMED)
+  #======================
   
   
   new_matches <- reactive({ db_data()$MATCHES() %>% filter(match_type == "New") })
@@ -340,19 +387,93 @@ server <- function(id, input, output) {
   )
   })  # %>% formatStyle()
   
+  #-------------------------------------------------------------------------------------------------------------------------
   
+  #====================
+  #  MATCHED STUDENTS
+  #====================
+  
+  matched_studs <- reactive({ db_data()$STUD_FORM() %>% filter(num_slots_needed == 0) })
+  num_matched_studs <- reactive({ nrow(matched_studs()) })
+  
+  #NUM MATCHED STUDENTS
+  output$num_matched_studs <- renderValueBox({ 
+    valueBox(value = num_matched_studs(), subtitle = "Matched Students", 
+             color = "green", icon = icon("user-check"))  
+  })
+  
+  
+  filled_studs <- reactive({ db_data()$STUD_FORM() %>% filter(num_slots_needed == 1) })
+  num_filled_stud_slots <- reactive({ nrow(filled_studs()) })
+  
+  
+  #FILLED STUDENT SLOTS
+  output$num_filled_studs <- renderValueBox({ 
+    valueBox(value = num_filled_stud_slots(), subtitle = "Filled Student Slots", 
+             color = "green", icon = icon("th-list"))  
+  })
+  
+  
+  
+  
+  #stud_hist <- reactive({ db_data()$STUD_HIST })
+  
+  #Outputs
+  #------------------
+  output$matched_studs_table <- DT::renderDT({
+    DT::datatable(matched_studs()[, c('first_name', 'last_name')],
+                  
+                  class = 'cell-border stripe',
+                  #editable = list(target = "row", disable = list(columns = c(2, 3))),
+                  filter = "top",
+                  extensions = "Buttons",
+                  
+                  rownames = FALSE,
+                  colnames = c("First Name", "Last Name"),
+                  
+                  selection = 'single',
+                  options = list(
+                    columnDefs = list(list(className = 'dt-left', targets = '_all')),
+                    dom = "Btip",
+                    buttons = list("copy", 
+                                   list(extend = "collection", 
+                                        buttons = list(
+                                          list(extend = "csv", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "excel", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
+                                          list(extend = "pdf", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}"))
+                                        ),
+                                        text = "Download")
+                    )
+                  )
+    )
+  })  # %>% formatStyle()
+  
+  
+  
+  #-------------------------------------------------------------------------------------------------------------------------
   
   #========================
   #  MATCHED VOLUNTEERS 
   #========================
   
   matched_vols <- reactive({ db_data()$VOL_TUTOR() %>% filter(num_slots_needed == 0) })
-  
   num_matched_vols <- reactive ({ nrow(matched_vols()) })
   
+  #NUM MATCHED VOLUNTEERS
   output$num_matched_vols <- renderValueBox({ 
     valueBox(num_matched_vols(), subtitle = "Matched Volunteers", 
              color = "green", icon = icon("user-check"))
+  })
+  
+  
+  filled_vols <- reactive({ db_data()$VOL_TUTOR() %>% filter(num_slots_needed == 1) })
+  num_filled_vol_slots <- reactive({ nrow(filled_vols()) })
+  
+  
+  #NUM MATCHED VOL SLOTS
+  output$num_filled_vols <- renderValueBox({
+    valueBox(num_filled_vol_slots(), subtitle = "Filled Volunteer Slots", 
+             color = "green", icon = icon("th-list"))
   })
   
   
@@ -389,57 +510,7 @@ server <- function(id, input, output) {
   })
   
   
-  
-  
-  #-----------------------------------------------------------------------------------------
-  #  MATCHED STUDENTS
-  #------------------
-  
-  matched_studs <- reactive({ db_data()$STUD_FORM() %>% filter(num_slots_needed == 0) })
-  
-  num_matched_studs <- reactive({ nrow(matched_studs()) })
-  
-  output$num_matched_studs <- renderValueBox({ 
-    valueBox(value = num_matched_studs(), subtitle = "Matched Students", 
-             color = "green", icon = icon("user-check"))  
-  })
-  
-  #stud_hist <- reactive({ db_data()$STUD_HIST })
-  
-  #Outputs
-  #------------------
-  output$matched_studs_table <- DT::renderDT({
-    DT::datatable(matched_studs()[, c('first_name', 'last_name')],
-                  
-                  class = 'cell-border stripe',
-                  #editable = list(target = "row", disable = list(columns = c(2, 3))),
-                  filter = "top",
-                  extensions = "Buttons",
-                  
-                  rownames = FALSE,
-                  colnames = c("First Name", "Last Name"),
-                  
-                  selection = 'single',
-                  options = list(
-                    columnDefs = list(list(className = 'dt-left', targets = '_all')),
-                    dom = "Btip",
-                    buttons = list("copy", 
-                                   list(extend = "collection", 
-                                        buttons = list(
-                                          list(extend = "csv", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
-                                          list(extend = "excel", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}")),
-                                          list(extend = "pdf", title = glue("matched_tutee_students_{str_replace_all(as.character(now()), ' |:', '_')}"))
-                                        ),
-                                        text = "Download")
-                    )
-                  )
-    )
-  })  # %>% formatStyle()
-  
-  
-  
-  
-  
+  #-------------------------------------------------------------------------------------------------------------------------
   
  
   #================

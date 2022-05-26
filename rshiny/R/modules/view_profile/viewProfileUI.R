@@ -73,6 +73,14 @@ viewProfileUI <- function(id) {
                               
                        ),
                        
+                       #MATCHES
+                       tabPanel(title = "Matches",
+                                value = ns("match_tab"),
+                                br(), 
+                                
+                                h4("Actual matches shown here") 
+                       ),
+                       
                    
                        #NOTES
                        tabPanel(title = "Notes",

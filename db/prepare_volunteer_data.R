@@ -31,7 +31,7 @@ names(df) <- c(   'timestamp',
                   'reregister_ackn_2',
                   'desired_start_date',
                   'details_multiple_dates',
-                  'want_new_student_role_indicator', #20
+                  'want_additional_student_indicator', #20
                   'where_hear_wec',
                   'why_serve',
                   'past_apply_not_placed',
@@ -159,7 +159,7 @@ df <- df %>% filter(vol_intention == "YES") %>%
 
 #Tutor with same student
 #--------------------------------------------------
-df_same_match <- df %>% filter(pref_role_1 == "") %>% select(1:want_new_student_role_indicator)
+df_same_match <- df %>% filter(pref_role_1 == "") %>% select(1:want_additional_student_indicator)
 #--------------------------------------------------
 
 #Filtering out continued tutor matches
@@ -284,7 +284,11 @@ df <- df %>% mutate(across(starts_with("am_time"), ~paste(., "1:30 PM - 2:30 PM"
                           ~str_replace(., "^12:30 PM - 1:30 PM$|^ 12:30 PM - 1:30 PM$|NA 12:30 PM - 1:30 PM", NA_character_))) 
             
 
+#Clean up reserved student names so blank unless specific student listed
+df <- df %>% mutate(reserved_student_names = case_when(str_detect(reserved_student_names, "N/A|None|Anyone|Any .*|New|My tutee|unavailable") ~ "",
+                                                       TRUE ~ reserved_student_names)) %>%
 
+             replace_na(list(reserved_student_names = ""))
 
 
 

@@ -332,7 +332,7 @@ run_algorithm_all <- function(){
   #Get all unmatched volunteers
   df_vol <- load_data("vol_tutors") %>% filter(status == 'Unmatched' & 
                                                  num_slots_needed != 0 &
-                                                 want_new_student_role_indicator == "Yes" &
+                                                 want_additional_student_indicator == "Yes" &
                                                  tutor_type_pref != "Online Writing Tutor") 
  
   

@@ -68,16 +68,24 @@ body <- dashboardBody(
       tabsetPanel(id = 'setpanel_home',
       
         tabPanel(
-          title = 'Overview',
-          value = 'home_overview_tab',
+          title = 'Summary',
+          value = 'home_summary_tab',
           br(),
           
           fluidRow(
-            valueBoxOutput(outputId = "over_num_unmatched_studs", width = 2) %>% withSpinner(),
-            #valueBoxOutput(outputId = "over_num_matched_studs", width = 2) %>% withSpinner(),
-            valueBoxOutput(outputId = "over_num_unmatched_vols", width = 2) %>% withSpinner(),
-            #valueBoxOutput(outputId = "over_num_matched_vols", width = 2) %>% withSpinner(),
-            #valueBoxOutput(outputId = "over_total_matches", width = 2) %>% withSpinner()
+            valueBoxOutput(outputId = "summ_num_unmatched_studs", width = 2) %>% withSpinner(),
+            valueBoxOutput(outputId = "summ_num_matched_studs", width = 2) %>% withSpinner(),
+            valueBoxOutput(outputId = "summ_num_unmatched_vols", width = 2) %>% withSpinner(),
+            valueBoxOutput(outputId = "summ_num_matched_vols", width = 2) %>% withSpinner(),
+           
+          ),
+          
+          fluidRow(
+            
+            valueBoxOutput(outputId = "summ_num_unfilled_studs", width = 2) %>% withSpinner(),
+            valueBoxOutput(outputId = "summ_num_filled_studs", width = 2) %>% withSpinner(),
+            valueBoxOutput(outputId = "summ_num_unfilled_vols", width = 2) %>% withSpinner(),
+            valueBoxOutput(outputId = "summ_num_filled_vols", width = 2) %>% withSpinner(),
           ),
           
           br(), br(), br(),
@@ -91,6 +99,11 @@ body <- dashboardBody(
          #br()
           
           #MORE TO COME HERE! :D 
+        ),
+        
+        tabPanel(
+          title = 'Overview',
+          value = 'home_overview_tab'
         ),
         
         tabPanel(
@@ -131,7 +144,8 @@ body <- dashboardBody(
           br(),
           
           fluidRow(
-                   valueBoxOutput(outputId = "num_unmatched_studs", width = 2) %>% withSpinner()
+                   valueBoxOutput(outputId = "num_unmatched_studs", width = 2) %>% withSpinner(),
+                   valueBoxOutput(outputId = "num_unfilled_studs", width = 2) %>% withSpinner()
            
           ),
           
@@ -157,7 +171,8 @@ body <- dashboardBody(
           br(),
           
           fluidRow(
-            valueBoxOutput(outputId = "num_unmatched_vols", width = 2) %>% withSpinner()
+            valueBoxOutput(outputId = "num_unmatched_vols", width = 2) %>% withSpinner(),
+            valueBoxOutput(outputId = "num_unfilled_vols", width = 2) %>% withSpinner()
           ),
           
           fluidRow(
