@@ -225,7 +225,7 @@ server <- function(id, input, output) {
   #------------------
   output$unmatched_stud_table <- DT::renderDT({
     DT::datatable(unm_students()[, c('first_name', 'last_name', 'num_slots_needed', 'timestamp', 'native_lang', 
-                                     'want_same_tutor', 'made_payment')],
+                                     'want_same_tutor', 'tutor_name', 'made_payment')],
                   
                   class = 'cell-border stripe',
                   #editable = list(target = "row", disable = list(columns = c(2, 3))),
@@ -234,7 +234,7 @@ server <- function(id, input, output) {
                   
                   rownames = FALSE,
                   colnames = c("First Name", "Last Name", "Number Slots to Fill", "Date Registered", "Native Language", 
-                               "Need New Tutor?", "Paid?"),
+                               "Need New Tutor?", 'Reserved Tutor(s)', "Paid?"),
                   
                   selection = 'single',
                   options = list(
