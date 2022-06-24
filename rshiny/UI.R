@@ -128,7 +128,7 @@ body <- dashboardBody(
     #----------
     tabItem(
       tabName = 'sidebar_matching',
-      h4(span("Matching", style="padding-right:1450px"),  actionButton(inputId = "overall_refresh_button", label = "Refresh",
+      h4(span("Matching", style="padding-right:1150px"),  actionButton(inputId = "overall_refresh_button", label = "Refresh",
                                        icon = icon("sync-alt", style='padding-right:4px;')), 
                          
          style='display:block;'
