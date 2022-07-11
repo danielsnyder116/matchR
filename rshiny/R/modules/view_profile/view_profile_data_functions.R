@@ -17,7 +17,8 @@ get_profile <- function(){
                     pivot_longer(!id, names_to ="field") %>% select(-id) 
 
     details <- data %>% select(id, previous_role, reserved_student_names, desired_start_date, details_multiple_dates, 
-                                  want_new_student_role_indicator, past_apply_not_placed, had_onboard_call_with_staff,
+                                  want_additional_student_indicator, 
+                                  past_apply_not_placed, had_onboard_call_with_staff,
                                   pref_role_1, tutor_type_pref, pref_tutor_slot, am_time_avail_1, am_time_avail_2, 
                                   am_time_avail_3, am_time_avail_4, pm_time_avail_1, pm_time_avail_2, pm_time_avail_3, 
                                   pm_time_avail_4, wknd_time_avail_1, wknd_time_avail_2, tutor_level_prefs, 
@@ -293,7 +294,7 @@ run_algorithm_all <- function(){
   #Get all unmatched volunteers
   df_vol <- load_data("vol_tutors") %>% filter(status == 'Unmatched' & 
                                                  num_slots_needed != 0 &
-                                                 want_new_student_role_indicator == "Yes" &
+                                                 want_additional_student_indicator == "Yes" &
                                                  tutor_type_pref != "Online Writing Tutor")
   
 
@@ -323,7 +324,7 @@ run_algorithm_one <- function() {
   #Get all unmatched volunteers
   df_vol <- load_data("vol_tutors") %>% filter(status == 'Unmatched' & 
                                                  num_slots_needed != 0 &
-                                                 want_new_student_role_indicator == "Yes" &
+                                                 want_additional_student_indicator == "Yes" &
                                                  tutor_type_pref != "Online Writing Tutor")
   
   #Pivot volunteer data to match by timeslots
